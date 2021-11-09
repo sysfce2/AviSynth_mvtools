@@ -303,7 +303,7 @@ SAD_x264(4, 4, mmx2);
 // alternative to SAD - SSD: squared sum of differences, VERY sensitive to noise
 // ssd did not go live. sample: x264_pixel_ssd_16x16_mmx
 
-#ifdef USE_SAD_ASM
+#ifdef USE_SATD_ASM
 /* SATD: Sum of Absolute Transformed Differences, more sensitive to noise, frequency domain based - replacement to dct/SAD */
 #define SATD_SSE(blsizex, blsizey, type) extern "C" unsigned int __cdecl x264_pixel_satd_##blsizex##x##blsizey##_##type(const uint8_t *pSrc, int nSrcPitch, const uint8_t *pRef, int nRefPitch)
 // Make extern functions from the satd pixel-a.asm
