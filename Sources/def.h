@@ -66,13 +66,29 @@ const long double	PI  = 3.1415926535897932384626433832795L;
 const long double	LN2 = 0.69314718055994530941723212145818L;
 
 #ifndef MV_FORCEINLINE
-#if defined(__clang__)
+#if defined(__clang__) && ! defined(__INTEL_LLVM_COMPILER)
 // Check clang first. clang-cl also defines __MSC_VER
 // We set MSVC because they are mostly compatible
+// Intel LLVM NextGen based also reports clang
+#   define CLANG
+#if defined(_MSC_VER)
+#   define MSVC
+#endif
+#   define MV_FORCEINLINE __attribute__((always_inline)) inline
+#elif defined(__INTEL_LLVM_COMPILER)
+// Intel NextGen
 #   define CLANG
 #if defined(_MSC_VER)
 #   define MSVC
 #   define MV_FORCEINLINE __attribute__((always_inline)) inline
+#else
+#   define MV_FORCEINLINE __attribute__((always_inline)) inline
+#endif
+#elif defined(__INTEL_COMPILER)
+// Intel Classic, MSVC compatible under Windows, otherwise gcc
+#if defined(_MSC_VER)
+#   define MSVC
+#   define MV_FORCEINLINE __forceinline
 #else
 #   define MV_FORCEINLINE __attribute__((always_inline)) inline
 #endif
