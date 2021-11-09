@@ -150,9 +150,10 @@ MAKE_FN(2, 1)
 // and 16 bit SSE4 function
 // for no_template_by_y: special height==0 -> internally nHeight comes from variable (for C: both width and height is variable)
 // Degrain1to6_avx2: not worth, probably the excessive ymm register saving prolog and epilog overhead?
+//                   above fixed (no manual vzeroupper!) not worth, 
 #define MAKE_FN_LEVEL(x, y, level, yy) \
 func_degrain[make_tuple(x, y, DEGRAIN_TYPE_8BIT, level, USE_SSE2)] = Degrain1to6_sse2<x, yy, 0, level>; \
-/*func_degrain[make_tuple(x, y, DEGRAIN_TYPE_8BIT, level, USE_AVX2)] = Degrain1to6_avx2<x, yy, 0, level>;*/ \
+func_degrain[make_tuple(x, y, DEGRAIN_TYPE_8BIT, level, USE_AVX2)] = Degrain1to6_avx2<x, yy, 0, level>; \
 func_degrain[make_tuple(x, y, DEGRAIN_TYPE_8BIT_STACKED, level, USE_SSE2)] = Degrain1to6_sse2<x, yy, 1, level>; \
 func_degrain[make_tuple(x, y, DEGRAIN_TYPE_8BIT_OUT16, level, USE_SSE2)] = Degrain1to6_sse2<x, yy, 2, level>; \
 func_degrain[make_tuple(x, y, DEGRAIN_TYPE_8BIT + OUT32_MARKER, level, USE_SSE2)] = Degrain1to6_sse2<x, yy, 3, level>; \
