@@ -79,51 +79,15 @@ void Degrain1to6_avx2(BYTE* pDst, BYTE* pDstLsb, int WidthHeightForC, int nDstPi
   // B: Back F: Forward
   __m128i zero = _mm_setzero_si128();
   __m256i zero_256 = _mm256_setzero_si256();
-  __m128i ws;
-  __m256i ws_256;
-  __m128i wb1, wf1;
-  __m128i wb2, wf2;
-  __m128i wb3, wf3;
-  __m128i wb4, wf4;
-  __m128i wb5, wf5;
-  __m128i wb6, wf6;
 
   __m256i wbf_256[level];
 
-#if 0
-  __m256i wbf1_256;
-  __m256i wbf2_256;
-  __m256i wbf3_256;
-  __m256i wbf4_256;
-  __m256i wbf5_256;
-  __m256i wbf6_256;
-#endif
   // interleave 0 and center weight
-  ws_256 = _mm256_set1_epi16((0 << 16) + WSrc);
+  __m256i ws_256 = _mm256_set1_epi16((0 << 16) + WSrc);
 
   // interleave F and B for madd
   for(int i = 0; i < level; i++)
     wbf_256[i] = _mm256_set1_epi32((WRefB[i] << 16) | WRefF[i]);
-
-#if 0
-  // interleave F and B for madd
-  wbf1_256 = _mm256_set1_epi32((WRefB[0] << 16) | WRefF[0]);
-  if constexpr (level >= 2) {
-    wbf2_256 = _mm256_set1_epi32((WRefB[1] << 16) | WRefF[1]);
-    if constexpr (level >= 3) {
-      wbf3_256 = _mm256_set1_epi32((WRefB[2] << 16) | WRefF[2]);
-      if constexpr (level >= 4) {
-        wbf4_256 = _mm256_set1_epi32((WRefB[3] << 16) | WRefF[3]);
-        if constexpr (level >= 5) {
-          wbf5_256 = _mm256_set1_epi32((WRefB[4] << 16) | WRefF[4]);
-          if constexpr (level >= 6) {
-            wbf6_256 = _mm256_set1_epi32((WRefB[5] << 16) | WRefF[5]);
-          }
-        }
-      }
-    }
-  }
-#endif
 
   //  (lsb_flag || out16 || out32): 8 bit in 16 bits out, out32 will be converted to float
   //  else 8 bit in 8 bit out (but 16 bit intermediate)
@@ -408,7 +372,11 @@ void Degrain1to6_avx2(BYTE* pDst, BYTE* pDstLsb, int WidthHeightForC, int nDstPi
       }
     }
   }
-  _mm256_zeroupper();
+  // https://stackoverflow.com/questions/68736527/do-i-need-to-use-mm256-zeroupper-in-2021
+  // 1.) compilers do it nowadays automatically
+  // 2.) this makes LLVM to save-restore ALL (!) registers in epilogue/prologue!
+  //_mm256_zeroupper(); 
+  /* NO! Use VZEROUPPER to avoid the penalty of switching from AVX to SSE */
 }
 
 // instantiate

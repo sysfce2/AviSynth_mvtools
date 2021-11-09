@@ -360,7 +360,6 @@ void PlaneOfBlocks::ExhaustiveSearch8x8_uint8_np1_sp4_avx2(WorkingArea& workarea
   workarea.nMinCost = cost;
   workarea.bestMV.sad = minsad;
 
-  _mm256_zeroupper();
 }
 
 void PlaneOfBlocks::ExhaustiveSearch8x8_uint8_np1_sp2_avx2(WorkingArea& workarea, int mvx, int mvy)
@@ -847,8 +846,6 @@ void PlaneOfBlocks::ExhaustiveSearch8x8_uint8_np1_sp2_avx2(WorkingArea& workarea
   workarea.nMinCost = cost;
   workarea.bestMV.sad = minsad;
 
-  _mm256_zeroupper();
-
 }
 
 void PlaneOfBlocks::ExhaustiveSearch8x8_uint8_np1_sp1_avx2(WorkingArea& workarea, int mvx, int mvy)
@@ -1079,8 +1076,6 @@ void PlaneOfBlocks::ExhaustiveSearch8x8_uint8_np1_sp1_avx2(WorkingArea& workarea
   workarea.bestMV.y = mvy + (idx_min_sad / 3) - 1;
   workarea.nMinCost = cost;
   workarea.bestMV.sad = minsad;
-
-  _mm256_zeroupper();
 
 }
 

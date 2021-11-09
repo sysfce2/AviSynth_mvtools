@@ -146,9 +146,6 @@ unsigned int Sad10_avx2(const uint8_t *pSrc, int nSrcPitch, const uint8_t *pRef,
   }
 #endif
 
-  _mm256_zeroupper();
-  /* Use VZEROUPPER to avoid the penalty of switching from AVX to SSE */
-
   return result;
 }
 
@@ -321,9 +318,6 @@ unsigned int Sad16_avx2(const uint8_t *pSrc, int nSrcPitch,const uint8_t *pRef, 
     result = result2;
   }
 #endif
-
-  _mm256_zeroupper();
-  /* Use VZEROUPPER to avoid the penalty of switching from AVX to SSE */
 
   return result;
 }
