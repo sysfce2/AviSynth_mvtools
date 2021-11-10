@@ -787,9 +787,7 @@ void PlaneOfBlocks::FetchPredictors(WorkingArea &workarea)
   */
   //	if ( workarea.predictor.sad > LSAD ) { workarea.nLambda = 0; } // generalized (was LSAD=400) by Fizick
   
-  // v2.7.11.32:
-  typedef bigsad_t safe_sad_t;
-  // for large block sizes int32 overflows during calculation even for 8 bits, so we always use 64 bit bigsad_t intermediate here
+  // for large block sizes int32 overflows during calculation even for 8 bits, so we always use double
   // (some calculations for truemotion=true)
   // blksize  lambda                LSAD   LSAD (renormalized)        lambda*LSAD
   // 8x8      1000*(8*8)/64=1000    1200   1200*8x8/64<<0=1200          1 200 000
@@ -799,15 +797,12 @@ void PlaneOfBlocks::FetchPredictors(WorkingArea &workarea)
   //          other level:   128000                         19200   2 457 600 000 (int32 overflow!)
   // 48x48    1000*(48*48)/64=36000 1200   1200*48x48/64<<0=43200   1 555 200 000 still OK
   // 64x64    1000*(64*64)/64=64000 1200   1200*64x64/64<<0=76800   4 915 200 000 (int32 overflow!)
-  safe_sad_t divisor = (safe_sad_t)LSAD + (workarea.predictor.sad >> 1);
-  workarea.nLambda = (int)(workarea.nLambda
-                     *(safe_sad_t)LSAD
-                     / divisor
-                     * LSAD
-                     / divisor);
-  // replaced hard threshold by soft in v1.10.2 by Fizick (a liitle complex expression to avoid overflow)
-  //	int a = LSAD/(LSAD + (workarea.predictor.sad>>1));
-  //	workarea.nLambda = workarea.nLambda*a*a;
+  if (LSAD == 0)
+    workarea.nLambda = 0;
+  else {
+    double factor = LSAD / (double)(LSAD + (workarea.predictor.sad >> 1));
+    workarea.nLambda = (int)(workarea.nLambda * factor * factor);
+  }
 }
 
 
