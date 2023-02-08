@@ -1086,13 +1086,13 @@ func_sad[make_tuple(x, y, 8, USE_SSE2)] = Sad_sse2<x,y>;
 // 8 bit only
 #define	SATD_REC_FUNC(blsizex, blsizey, sblx, sbly, type)	extern "C" unsigned int __cdecl	x264_pixel_satd_##blsizex##x##blsizey##_##type (const uint8_t *pSrc, int nSrcPitch, const uint8_t *pRef, int nRefPitch)	\
 { \
-  if(blsizex / sblx == 2 && blsizey / sbly == 2) \
+  if constexpr(blsizex / sblx == 2 && blsizey / sbly == 2) \
     return \
       x264_pixel_satd_##sblx##x##sbly##_##type (pSrc,                     nSrcPitch, pRef,                     nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+sblx,                nSrcPitch, pRef+sblx,                nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc     +sbly*nSrcPitch, nSrcPitch, pRef     +sbly*nRefPitch, nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+sblx+sbly*nSrcPitch, nSrcPitch, pRef+sblx+sbly*nRefPitch, nRefPitch);\
-  else if(blsizex / sblx == 3 && blsizey / sbly == 3) \
+  else if constexpr(blsizex / sblx == 3 && blsizey / sbly == 3) \
     return \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+0*sblx     +0*sbly*nSrcPitch, nSrcPitch, pRef+0*sblx     +0*sbly*nRefPitch, nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+1*sblx     +0*sbly*nSrcPitch, nSrcPitch, pRef+1*sblx     +0*sbly*nRefPitch, nRefPitch) \
@@ -1103,7 +1103,7 @@ func_sad[make_tuple(x, y, 8, USE_SSE2)] = Sad_sse2<x,y>;
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+0*sblx     +2*sbly*nSrcPitch, nSrcPitch, pRef+0*sblx     +2*sbly*nRefPitch, nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+1*sblx     +2*sbly*nSrcPitch, nSrcPitch, pRef+1*sblx     +2*sbly*nRefPitch, nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+2*sblx     +2*sbly*nSrcPitch, nSrcPitch, pRef+2*sblx     +2*sbly*nRefPitch, nRefPitch); \
-  else if(blsizex / sblx == 4 && blsizey / sbly == 4) \
+  else if constexpr(blsizex / sblx == 4 && blsizey / sbly == 4) \
     return \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+0*sblx     +0*sbly*nSrcPitch, nSrcPitch, pRef+0*sblx     +0*sbly*nRefPitch, nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+1*sblx     +0*sbly*nSrcPitch, nSrcPitch, pRef+1*sblx     +0*sbly*nRefPitch, nRefPitch) \
@@ -1121,7 +1121,7 @@ func_sad[make_tuple(x, y, 8, USE_SSE2)] = Sad_sse2<x,y>;
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+1*sblx     +3*sbly*nSrcPitch, nSrcPitch, pRef+1*sblx     +3*sbly*nRefPitch, nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+2*sblx     +3*sbly*nSrcPitch, nSrcPitch, pRef+2*sblx     +3*sbly*nRefPitch, nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+3*sblx     +3*sbly*nSrcPitch, nSrcPitch, pRef+3*sblx     +3*sbly*nRefPitch, nRefPitch); \
-  else if(blsizex / sblx == 2 && blsizey / sbly == 4) \
+  else if constexpr(blsizex / sblx == 2 && blsizey / sbly == 4) \
     return \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+0*sblx     +0*sbly*nSrcPitch, nSrcPitch, pRef+0*sblx     +0*sbly*nRefPitch, nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+1*sblx     +0*sbly*nSrcPitch, nSrcPitch, pRef+1*sblx     +0*sbly*nRefPitch, nRefPitch) \
@@ -1131,7 +1131,7 @@ func_sad[make_tuple(x, y, 8, USE_SSE2)] = Sad_sse2<x,y>;
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+1*sblx     +2*sbly*nSrcPitch, nSrcPitch, pRef+1*sblx     +2*sbly*nRefPitch, nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+0*sblx     +3*sbly*nSrcPitch, nSrcPitch, pRef+0*sblx     +3*sbly*nRefPitch, nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+1*sblx     +3*sbly*nSrcPitch, nSrcPitch, pRef+1*sblx     +3*sbly*nRefPitch, nRefPitch); \
-  else if(blsizex / sblx == 4 && blsizey / sbly == 2) \
+  else if constexpr(blsizex / sblx == 4 && blsizey / sbly == 2) \
     return \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+0*sblx     +0*sbly*nSrcPitch, nSrcPitch, pRef+0*sblx     +0*sbly*nRefPitch, nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+1*sblx     +0*sbly*nSrcPitch, nSrcPitch, pRef+1*sblx     +0*sbly*nRefPitch, nRefPitch) \
@@ -1150,24 +1150,24 @@ func_sad[make_tuple(x, y, 8, USE_SSE2)] = Sad_sse2<x,y>;
 // sblx, sbly: building stone
 #define	SATD_REC_FUNC_VERT_ONLY(blsizex, blsizey, sblx, sbly, type)	extern "C" unsigned int __cdecl	x264_pixel_satd_##blsizex##x##blsizey##_##type (const uint8_t *pSrc, int nSrcPitch, const uint8_t *pRef, int nRefPitch)	\
 { \
-  if (blsizex != sblx) \
+  if constexpr(blsizex != sblx) \
     assert(0); \
-  else if(blsizey / sbly == 2) \
+  else if constexpr(blsizey / sbly == 2) \
     return \
       x264_pixel_satd_##sblx##x##sbly##_##type (pSrc,                     nSrcPitch, pRef,                     nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc     +sbly*nSrcPitch, nSrcPitch, pRef     +sbly*nRefPitch, nRefPitch);\
-  else if(blsizey / sbly == 3) \
+  else if constexpr(blsizey / sbly == 3) \
     return \
       x264_pixel_satd_##sblx##x##sbly##_##type (pSrc,                       nSrcPitch, pRef,                       nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc       +sbly*nSrcPitch, nSrcPitch, pRef       +sbly*nRefPitch, nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc     +2*sbly*nSrcPitch, nSrcPitch, pRef     +2*sbly*nRefPitch, nRefPitch); \
-  else if(blsizey / sbly == 4) \
+  else if constexpr(blsizey / sbly == 4) \
     return \
       x264_pixel_satd_##sblx##x##sbly##_##type (pSrc,                       nSrcPitch, pRef,                       nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc       +sbly*nSrcPitch, nSrcPitch, pRef       +sbly*nRefPitch, nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc     +2*sbly*nSrcPitch, nSrcPitch, pRef     +2*sbly*nRefPitch, nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc     +3*sbly*nSrcPitch, nSrcPitch, pRef     +3*sbly*nRefPitch, nRefPitch);\
-  else if(blsizey / sbly == 8) \
+  else if constexpr(blsizey / sbly == 8) \
     return \
       x264_pixel_satd_##sblx##x##sbly##_##type (pSrc,                       nSrcPitch, pRef,                       nRefPitch) \
     + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc       +sbly*nSrcPitch, nSrcPitch, pRef       +sbly*nRefPitch, nRefPitch) \
@@ -1186,19 +1186,19 @@ func_sad[make_tuple(x, y, 8, USE_SSE2)] = Sad_sse2<x,y>;
 // sblx, sbly: building stone
 #define	SATD_REC_FUNC_HORIZ_ONLY(blsizex, blsizey, sblx, sbly, type)	extern "C" unsigned int __cdecl	x264_pixel_satd_##blsizex##x##blsizey##_##type (const uint8_t *pSrc, int nSrcPitch, const uint8_t *pRef, int nRefPitch)	\
 { \
-  if (blsizex != sblx) \
+  if constexpr(blsizex != sblx) \
     assert(0); \
-  else if(blsizex / sblx == 2) \
+  else if constexpr(blsizex / sblx == 2) \
     return \
     x264_pixel_satd_##sblx##x##sbly##_##type (pSrc,                     nSrcPitch, pRef,                     nRefPitch)\
   + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+sblx,                nSrcPitch, pRef+sblx,                nRefPitch);\
-  else if(blsizex / sblx == 4) \
+  else if constexpr(blsizex / sblx == 4) \
     return \
     x264_pixel_satd_##sblx##x##sbly##_##type (pSrc,                       nSrcPitch, pRef,                       nRefPitch)\
   + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+sblx,                  nSrcPitch, pRef+sblx,                  nRefPitch)\
   + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+2*sblx,                nSrcPitch, pRef+2*sblx,                nRefPitch)\
   + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+3*sblx,                nSrcPitch, pRef+3*sblx,                nRefPitch);\
-  else if(blsizex / sblx == 8) \
+  else if constexpr(blsizex / sblx == 8) \
     return \
     x264_pixel_satd_##sblx##x##sbly##_##type (pSrc,                       nSrcPitch, pRef,                       nRefPitch)\
   + x264_pixel_satd_##sblx##x##sbly##_##type (pSrc+sblx,                  nSrcPitch, pRef+sblx,                  nRefPitch)\
