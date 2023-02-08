@@ -50,6 +50,14 @@ Other builds are using internal SIMD code, governed by defines in def.h
 - Prequisite: for asm compilation use nasm https://www.nasm.us/ 
   Visual Studio integration: https://github.com/ShiftMediaProject/VSNASM/releases
 
+  Compiler nasm.exe can appear in c:\Program Files\Microsoft Visual Studio\2022\Community\VC\
+
+  You can check the files nasm.targets, nasm.props and nasm.xml in e.g. c:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Microsoft\VC\v170\BuildCustomizations\
+
+  For XP compatible (v141_xp) build, copy them to c:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Microsoft\VC\v150\BuildCustomizations\ as well.
+  
+  Latest nasm (as of 2022.Dec.) will throw a lot of warnings on x265 assembler files. Temporarily they are silenced with -w-macro-params-legacy parameter.
+
 * build from IDE
 
 ## Windows GCC
