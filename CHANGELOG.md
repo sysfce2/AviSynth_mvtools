@@ -1,4 +1,19 @@
 Change log
+- 2.7.46 (20230208)
+  - Fix (#58): MFlowFPS memory leak
+  - Fix (#49): lsad 0 division-by-zero crash
+  - MDegrainN 10-16 bits: SSE4.1 code path (was: C only)
+  - fix: MRestoreVect was trying to create unaligned frame (crash)
+    https://forum.doom9.org/showthread.php?p=1955944#post1955944
+  - (#48) Project files/solution: Intel C++ Compiler 2021 (icx) and 19.2 (icl classic) 
+    support on Windows 
+  - source: pull avstp 1.04 helper files and reapply earlier patches
+  - internals: MDegrain: horizontal 4 byte reads do not read 8 bytes 
+    (result was OK but reading more bytes than is than necessary may cause problems)
+  - internals: Stop using _mm256_zeroupper in avx2, compilers do that automatically and this makes LLVM 
+    to unoptimizedly save and restore _all_ ymm registers (slow!)
+    https://stackoverflow.com/questions/68736527/do-i-need-to-use-mm256-zeroupper-in-2021
+
 - 2.7.45 (20210608)
   - Fix: change parameter 'ml' from int to float in MBlockFPS. (Other filters with 'ml' are O.K.: MMask, MFlowInter, MFlowFPS are using float.)
   - Fix MBlockFPS html doc as well, which mentions 'thres' instead of 'ml'. Add mode 5-8 to MBlockFPS docs</li>
