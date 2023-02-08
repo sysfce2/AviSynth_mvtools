@@ -221,22 +221,31 @@ DePanEstimate_fftw::DePanEstimate_fftw(PClip _child, int _range, float _trust, i
     fftcache = (fftwf_complex**)fftfp.fftwf_malloc(fftcachecapacity * sizeof(uintptr_t)); // array of pointers x64: int->uintptr_t
     if (fftcache == NULL) env->ThrowError("DepanEstimate: FFTW Allocation Failure!\n");
     fftcache2 = (fftwf_complex**)fftfp.fftwf_malloc(fftcachecapacity * sizeof(uintptr_t));
+    if (fftcache2 == NULL) env->ThrowError("DepanEstimate: FFTW Allocation Failure (2)!\n");
     fftcachecomp = (fftwf_complex**)fftfp.fftwf_malloc(fftcachecapacity * sizeof(uintptr_t));
+    if (fftcachecomp == NULL) env->ThrowError("DepanEstimate: FFTW Allocation Failure (3)!\n");
     fftcachecomp2 = (fftwf_complex**)fftfp.fftwf_malloc(fftcachecapacity * sizeof(uintptr_t));
+    if (fftcachecomp2 == NULL) env->ThrowError("DepanEstimate: FFTW Allocation Failure (4)!\n");
     for (i = 0; i < fftcachecapacity; i++) {
       fftcache[i] = (fftwf_complex*)fftfp.fftwf_malloc(sizeof(fftwf_complex) * fftsize);
+      if (fftcache[i] == NULL) env->ThrowError("DepanEstimate: FFTW Allocation Failure (5)!\n");
       fftcachecomp[i] = (fftwf_complex*)fftfp.fftwf_malloc(sizeof(fftwf_complex) * fftsize);
+      if (fftcachecomp[i] == NULL) env->ThrowError("DepanEstimate: FFTW Allocation Failure (6)!\n");
       if (zoommax != 1) {
         fftcache2[i] = (fftwf_complex*)fftfp.fftwf_malloc(sizeof(fftwf_complex) * fftsize);  // right window if zoom
+        if (fftcache2[i] == NULL) env->ThrowError("DepanEstimate: FFTW Allocation Failure (7)!\n");
         fftcachecomp2[i] = (fftwf_complex*)fftfp.fftwf_malloc(sizeof(fftwf_complex) * fftsize); // right window if zoom
+        if (fftcachecomp2[i] == NULL) env->ThrowError("DepanEstimate: FFTW Allocation Failure (8)!\n");
       }
     }
 
 
     // memory for correlation matrice
     correl = (fftwf_complex*)fftfp.fftwf_malloc(sizeof(fftwf_complex) * fftsize);//alloc_2d_float(winy, winx, env);
+    if (correl == NULL) env->ThrowError("DepanEstimate: FFTW Allocation Failure (9)!\n");
     if (zoommax != 1) {
       correl2 = (fftwf_complex*)fftfp.fftwf_malloc(sizeof(fftwf_complex) * fftsize);
+      if (correl2 == NULL) env->ThrowError("DepanEstimate: FFTW Allocation Failure (10)!\n");
     }
 
     realcorrel = (float*)correl; // for inplace transform
