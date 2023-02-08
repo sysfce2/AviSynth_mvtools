@@ -61,9 +61,6 @@ class MVFrame;
 // v2.5.13.1: This class is currently a bit messy,
 // it's being reorganised and reworked for further improvement.
 
-constexpr int MAX_SUPPORTED_EXH_SEARCHPARAM = 4;
-// DTL test for new exhaustive functions dispatchers. 4: up to SearchParam==4
-
 class PlaneOfBlocks
 {
 
@@ -74,7 +71,7 @@ public:
   PlaneOfBlocks(int _nBlkX, int _nBlkY, int _nBlkSizeX, int _nBlkSizeY, int _nPel, int _nLevel, int _nFlags, int _nOverlapX, int _nOverlapY,
     int _xRatioUV, int _yRatioUV, int _pixelsize, int _bits_per_pixel,
     conc::ObjPool <DCTClass> *dct_pool_ptr,
-    bool mt_flag, int _chromaSADscale, int _optSearchOption,
+    bool mt_flag, int _chromaSADscale,
   IScriptEnvironment* env);
 
   ~PlaneOfBlocks();
@@ -84,8 +81,7 @@ public:
     int stp, int lambda, sad_t lsad, int pnew, int plevel,
     int flags, sad_t *out, const VECTOR *globalMVec, short * outfilebuf, int fieldShiftCur,
     int * meanLumaChange, int divideExtra,
-    int _pzero, int _pglobal, sad_t _badSAD, int _badrange, bool meander, int *vecPrev, bool _tryMany,
-    int optPredictorType);
+    int _pzero, int _pglobal, sad_t _badSAD, int _badrange, bool meander, int *vecPrev, bool _tryMany);
 
 
   /* plane initialisation */
@@ -108,8 +104,7 @@ public:
   void RecalculateMVs(MVClip & mvClip, MVFrame *_pSrcFrame, MVFrame *_pRefFrame, SearchType st,
     int stp, int _lambda, sad_t _lSAD, int _pennew,
     int flags, int *out, short * outfilebuf, int fieldShift, sad_t thSAD,
-    int _divideExtra, int smooth, bool meander,
-    int optPredictorType);
+    int _divideExtra, int smooth, bool meander);
 
 
 private:
@@ -139,7 +134,6 @@ private:
   const bool     _mt_flag;         // Allows multithreading
   const int      chromaSADscale;   // PF experimental 2.7.18.22 allow e.g. YV24 chroma to have the same magnitude as for YV12
   int            effective_chromaSADscale;   // PF experimental 2.7.18.22 allow e.g. YV24 chroma to have the same magnitude as for YV12
-  const int      optSearchOption; // DTL test != 0: allow
 
   SADFunction *  SAD;              /* function which computes the sad */
   LUMAFunction * LUMA;             /* function which computes the mean luma */
@@ -148,13 +142,6 @@ private:
   COPYFunction * BLITCHROMA;
   SADFunction *  SADCHROMA;
   SADFunction *  SATD;              /* SATD function, (similar to SAD), used as replacement to dct */
-
-  // DTL test
-  class WorkingArea; // forward
-  using ExhaustiveSearchFunction_t = void(PlaneOfBlocks::*)(WorkingArea& workarea, int mvx, int mvy);
-
-  ExhaustiveSearchFunction_t get_ExhaustiveSearchFunction(int BlockX, int BlockY, int SearchParam, int bits_per_pixel, arch_t arch);
-  ExhaustiveSearchFunction_t ExhaustiveSearchFunctions[MAX_SUPPORTED_EXH_SEARCHPARAM + 1]; // the function pointer
 
   std::vector <VECTOR>              /* motion vectors of the blocks */
     vectors;           /* before the search, contains the hierachal predictor */
@@ -227,7 +214,6 @@ private:
   int _smooth;
   sad_t _thSAD;
   //  const VECTOR zeroMV = {0,0,(sad_t)-1};
-  int _predictorType; // 2.7.46
 
 
   // Working area
@@ -358,36 +344,13 @@ private:
 
   /* performs an epz search */
   template<typename pixel_t>
-  void PseudoEPZSearch(WorkingArea &workarea); // full predictors, slowest, max quality
-
-  /* performs an epz search */
-  template<typename pixel_t>
-  void PseudoEPZSearch_no_pred(WorkingArea& workarea); // planes = 1 recommended
-
-  /* performs an epz search */
-  template<typename pixel_t>
-  void PseudoEPZSearch_glob_med_pred(WorkingArea& workarea); // planes >=2 recommended
+  void PseudoEPZSearch(WorkingArea &workarea);
 
   //	void PhaseShiftSearch(int vx, int vy);
 
   /* performs an exhaustive search */
   template<typename pixel_t>
   void ExpandingSearch(WorkingArea &workarea, int radius, int step, int mvx, int mvy); // diameter = 2*radius + 1
-
-  // DTL test function, 8x8 block, 8 bit only
-  // 8x8 esa search radius 4
-  void ExhaustiveSearch8x8_uint8_sp4_c(WorkingArea& workarea, int mvx, int mvy);
-  void ExhaustiveSearch8x8_uint8_np1_sp4_avx2(WorkingArea& workarea, int mvx, int mvy);
-  //void ExhaustiveSearch8x8_uint8_sp4_avx2_2(WorkingArea& workarea, int mvx, int mvy);
-
-  // 8x8 esa search radius 1
-  void ExhaustiveSearch8x8_uint8_sp1_c(WorkingArea& workarea, int mvx, int mvy);
-  void ExhaustiveSearch8x8_uint8_np1_sp1_avx2(WorkingArea& workarea, int mvx, int mvy);
-
-  // 8x8 esa search radius 2
-  void ExhaustiveSearch8x8_uint8_sp2_c(WorkingArea& workarea, int mvx, int mvy);
-  void ExhaustiveSearch8x8_uint8_np1_sp2_avx2(WorkingArea& workarea, int mvx, int mvy);
-  // END OF DTL test function
 
   template<typename pixel_t>
   void Hex2Search(WorkingArea &workarea, int i_me_range);

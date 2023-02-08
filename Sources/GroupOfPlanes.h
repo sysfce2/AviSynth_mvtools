@@ -42,7 +42,6 @@ class GroupOfPlanes
     int bits_per_pixel;
   int            divideExtra;
   bool           _mt_flag;
-  int optSearchOption; // DTL test
 
   conc::ObjPool <DCTClass> *
                  _dct_pool_ptr;
@@ -54,7 +53,7 @@ public :
     int _nBlkSizeX, int _nBlkSizeY, int _nLevelCount, int _nPel, int _nFlags,
     int _nOverlapX, int _nOverlapY, int _nBlkX, int _nBlkY, int _xRatioUV, int _yRatioUV, int _divideExtra, int _pixelsize, int _bits_per_pixel, 
     conc::ObjPool <DCTClass> *dct_pool_ptr,
-    bool mt_flag, int _chromaSADScale, int _optSearchOption,
+    bool mt_flag, int _chromaSADScale,
     IScriptEnvironment *env);
   ~GroupOfPlanes ();
   void           SearchMVs (
@@ -62,7 +61,7 @@ public :
     SearchType searchType, int nSearchParam, int _PelSearch, int _nLambda,
     sad_t _lsad, int _pnew, int _plevel, bool _global, int flags, int *out,
     short * outfilebuf, int fieldShift, int _pzero, int _pglobal, sad_t badSAD,
-    int badrange, bool meander, int *vecPrev, bool tryMany, int optPredictorType);
+    int badrange, bool meander, int *vecPrev, bool tryMany);
   void           WriteDefaultToArray (int *array);
   int            GetArraySize ();
   void           ExtraDivide (int *out, int flags);
@@ -70,7 +69,7 @@ public :
     MVClip &mvClip, MVGroupOfFrames *pSrcGOF, MVGroupOfFrames *pRefGOF,
     SearchType _searchType, int _nSearchParam, int _nLambda, sad_t _lsad,
     int _pnew, int flags, int *out, short * outfilebuf, int fieldShift,
-    sad_t thSAD, int smooth, bool meander, int optPredictorType);
+    sad_t thSAD, int smooth, bool meander);
 };
 
 #endif

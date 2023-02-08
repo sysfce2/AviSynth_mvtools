@@ -54,7 +54,7 @@ static unsigned int SadDummy(const uint8_t *, int , const uint8_t *, int )
 PlaneOfBlocks::PlaneOfBlocks(int _nBlkX, int _nBlkY, int _nBlkSizeX, int _nBlkSizeY, int _nPel, int _nLevel, int _nFlags, int _nOverlapX, int _nOverlapY,
   int _xRatioUV, int _yRatioUV, int _pixelsize, int _bits_per_pixel,
   conc::ObjPool <DCTClass> *dct_pool_ptr,
-  bool mt_flag, int _chromaSADscale, int _optSearchOption,
+  bool mt_flag, int _chromaSADscale,
   IScriptEnvironment* env)
   : nBlkX(_nBlkX)
   , nBlkY(_nBlkY)
@@ -78,7 +78,6 @@ PlaneOfBlocks::PlaneOfBlocks(int _nBlkX, int _nBlkY, int _nBlkSizeX, int _nBlkSi
   , bits_per_pixel(_bits_per_pixel) // PF
   , _mt_flag(mt_flag)
   , chromaSADscale(_chromaSADscale)
-  , optSearchOption(_optSearchOption)
   , SAD(0)
   , LUMA(0)
 //  , VAR(0)
@@ -192,23 +191,6 @@ PlaneOfBlocks::PlaneOfBlocks(int _nBlkX, int _nBlkY, int _nBlkSizeX, int _nBlkSi
     SADCHROMA = SadDummy;
   }
 
-  // DTL's new test 2.7.46
-  for (auto &fn : ExhaustiveSearchFunctions)
-    fn = nullptr;
-  // Get additional test functions only when optSearchOption is not 0.
-  // MAnalyze and MRecalculate has now an optsearchoption parameter.
-  if (optSearchOption != 0) {
-
-    // fill function array multiple functions, because nSearchParam can change during search
-    // block sizes and chroma remain the same
-
-    // not implemented ones are nullptr
-    if (nBlkSizeX == 8 && nBlkSizeY == 8 && pixelsize == 1 && !chroma) {
-      for (int iSearchParam = 0; iSearchParam <= MAX_SUPPORTED_EXH_SEARCHPARAM; iSearchParam++)
-        ExhaustiveSearchFunctions[iSearchParam] = get_ExhaustiveSearchFunction(nBlkSizeX, nBlkSizeY, iSearchParam, bits_per_pixel, arch);
-    }
-  }
-
   // for debug:
   //         SAD = x264_pixel_sad_4x4_mmx2;
   //         VAR = Var_C<8>;
@@ -279,8 +261,7 @@ void PlaneOfBlocks::SearchMVs(
   SearchType st, int stp, int lambda, sad_t lsad, int pnew,
   int plevel, int flags, sad_t *out, const VECTOR * globalMVec,
   short *outfilebuf, int fieldShift, sad_t * pmeanLumaChange,
-  int divideExtra, int _pzero, int _pglobal, sad_t _badSAD, int _badrange, bool meander, int *vecPrev, bool _tryMany,
-  int optPredictorType
+  int divideExtra, int _pzero, int _pglobal, sad_t _badSAD, int _badrange, bool meander, int *vecPrev, bool _tryMany
 )
 {
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -375,7 +356,6 @@ void PlaneOfBlocks::SearchMVs(
   _meander_flag = meander;
   _pnew = pnew;
   _lsad = lsad;
-  _predictorType = optPredictorType; // v2.7.46
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
@@ -404,8 +384,7 @@ void PlaneOfBlocks::RecalculateMVs(
   MVClip & mvClip, MVFrame *_pSrcFrame, MVFrame *_pRefFrame,
   SearchType st, int stp, int lambda, sad_t lsad, int pnew,
   int flags, int *out,
-  short *outfilebuf, int fieldShift, sad_t thSAD, int divideExtra, int smooth, bool meander,
-  int optPredictorType
+  short *outfilebuf, int fieldShift, sad_t thSAD, int divideExtra, int smooth, bool meander
 )
 {
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -484,7 +463,6 @@ void PlaneOfBlocks::RecalculateMVs(
   _out = out;
   _outfilebuf = outfilebuf;
   _meander_flag = meander;
-  _predictorType = optPredictorType; // 2.7.46
   _pnew = pnew;
   _lsad = lsad;
   _mv_clip_ptr = &mvClip;
@@ -709,6 +687,7 @@ void PlaneOfBlocks::FetchPredictors(WorkingArea &workarea)
   {
     workarea.predictors[1] = ClipMV(workarea, zeroMVfieldShifted); // v1.11.1 - values instead of pointer
   }
+
   // fixme note:
   // MAnalyze mt-inconsistency reason #1
   // this is _not_ internal mt friendly, since here up or bottom predictors
@@ -726,6 +705,7 @@ void PlaneOfBlocks::FetchPredictors(WorkingArea &workarea)
   {
     workarea.predictors[2] = ClipMV(workarea, zeroMVfieldShifted);
   }
+
     // Original problem: random, small, rare, mostly irreproducible differences between multiple encodings.
     // In all, I spent at least a week on the problem during a half year, losing hope
     // and restarting again four times. Nasty bug it was.
@@ -832,22 +812,6 @@ void PlaneOfBlocks::Refine(WorkingArea &workarea)
     //		ExhaustiveSearch(nSearchParam);
     int mvx = workarea.bestMV.x;
     int mvy = workarea.bestMV.y;
-
-    // DTL TEST
-    // one-pass Exa search by DTL
-    // only for 8 bit, nPel==1, nSearchParam == 1 and 2 and 4 && nBlkSizeX == 8 && nBlkSizeY == 8 && !chroma
-    // c or avx2. See function dispatcher
-    if (0 != optSearchOption && nPel == 1) { // keep compatibility - new addition - only for pel=1 now !! other will cause buggy x,y,sad output
-      if (nSearchParam <= MAX_SUPPORTED_EXH_SEARCHPARAM) {
-        // nSearchParam can change during the algorithm so we are choosing from prefilled function pointer table
-        auto ExhaustiveSearchFunction = ExhaustiveSearchFunctions[nSearchParam];
-        if (nullptr != ExhaustiveSearchFunction) {
-          (this->*ExhaustiveSearchFunction)(workarea, mvx, mvy);
-          break;
-        }
-      }
-    }
-
     for (int i = 1; i <= nSearchParam; i++)// region is same as exhaustive, but ordered by radius (from near to far)
     {
       ExpandingSearch<pixel_t>(workarea, i, 1, mvx, mvy);
@@ -1130,115 +1094,7 @@ void PlaneOfBlocks::PseudoEPZSearch(WorkingArea& workarea)
   workarea.planeSAD += workarea.bestMV.sad; // for debug, plus fixme outer planeSAD is not used
 }
 
-// DTL test
-template<typename pixel_t>
-void PlaneOfBlocks::PseudoEPZSearch_no_pred(WorkingArea& workarea)
-{
-    typedef typename std::conditional < sizeof(pixel_t) == 1, sad_t, bigsad_t >::type safe_sad_t;
- //   FetchPredictors<pixel_t>(workarea);
 
-    sad_t sad;
-    sad_t saduv;
-
-
-    // We treat zero alone
-    // Do we bias zero with not taking into account distorsion ?
-    workarea.bestMV.x = zeroMVfieldShifted.x;
-    workarea.bestMV.y = zeroMVfieldShifted.y;
-    saduv = (chroma) ?
-        ScaleSadChroma(SADCHROMA(workarea.pSrc[1], nSrcPitch[1], GetRefBlockU(workarea, 0, 0), nRefPitch[1])
-            + SADCHROMA(workarea.pSrc[2], nSrcPitch[2], GetRefBlockV(workarea, 0, 0), nRefPitch[2]), effective_chromaSADscale) : 0;
-    sad = LumaSAD<pixel_t>(workarea, GetRefBlock(workarea, 0, zeroMVfieldShifted.y));
-    sad += saduv;
-    workarea.bestMV.sad = sad;
-    workarea.nMinCost = sad + ((penaltyZero * (safe_sad_t)sad) >> 8); // v.1.11.0.2
-
-    // then, we refine, according to the search type
-    Refine<pixel_t>(workarea);
-
-    // we store the result
-    vectors[workarea.blkIdx].x = workarea.bestMV.x;
-    vectors[workarea.blkIdx].y = workarea.bestMV.y;
-    vectors[workarea.blkIdx].sad = workarea.bestMV.sad;
-
-    workarea.planeSAD += workarea.bestMV.sad; // for debug, plus fixme outer planeSAD is not used
-}
-
-// DTL test
-template<typename pixel_t>
-void PlaneOfBlocks::PseudoEPZSearch_glob_med_pred(WorkingArea& workarea)
-{
-    typedef typename std::conditional < sizeof(pixel_t) == 1, sad_t, bigsad_t >::type safe_sad_t;
-    FetchPredictors<pixel_t>(workarea);
-
-    sad_t sad;
-    sad_t saduv;
-
-
-    // We treat zero alone
-    // Do we bias zero with not taking into account distorsion ?
-    workarea.bestMV.x = zeroMVfieldShifted.x;
-    workarea.bestMV.y = zeroMVfieldShifted.y;
-    saduv = (chroma) ?
-        ScaleSadChroma(SADCHROMA(workarea.pSrc[1], nSrcPitch[1], GetRefBlockU(workarea, 0, 0), nRefPitch[1])
-            + SADCHROMA(workarea.pSrc[2], nSrcPitch[2], GetRefBlockV(workarea, 0, 0), nRefPitch[2]), effective_chromaSADscale) : 0;
-    sad = LumaSAD<pixel_t>(workarea, GetRefBlock(workarea, 0, zeroMVfieldShifted.y));
-    sad += saduv;
-    workarea.bestMV.sad = sad;
-    workarea.nMinCost = sad + ((penaltyZero * (safe_sad_t)sad) >> 8); // v.1.11.0.2
-
-
-   // Global MV predictor  - added by Fizick
-    workarea.globalMVPredictor = ClipMV(workarea, workarea.globalMVPredictor);
-
-    //	if ( workarea.IsVectorOK(workarea.globalMVPredictor.x, workarea.globalMVPredictor.y ) )
-    {
-        saduv = (chroma) ?
-            ScaleSadChroma(SADCHROMA(workarea.pSrc[1], nSrcPitch[1], GetRefBlockU(workarea, workarea.globalMVPredictor.x, workarea.globalMVPredictor.y), nRefPitch[1])
-                + SADCHROMA(workarea.pSrc[2], nSrcPitch[2], GetRefBlockV(workarea, workarea.globalMVPredictor.x, workarea.globalMVPredictor.y), nRefPitch[2]), effective_chromaSADscale) : 0;
-        sad = LumaSAD<pixel_t>(workarea, GetRefBlock(workarea, workarea.globalMVPredictor.x, workarea.globalMVPredictor.y));
-        sad += saduv;
-        sad_t cost = sad + ((pglobal * (safe_sad_t)sad) >> 8);
-
-        if (cost < workarea.nMinCost || tryMany)
-        {
-            workarea.bestMV.x = workarea.globalMVPredictor.x;
-            workarea.bestMV.y = workarea.globalMVPredictor.y;
-            workarea.bestMV.sad = sad;
-            workarea.nMinCost = cost;
-        }
-
-        //	}
-        //	Then, the predictor :
-        //	if (   (( workarea.predictor.x != zeroMVfieldShifted.x ) || ( workarea.predictor.y != zeroMVfieldShifted.y ))
-        //	    && (( workarea.predictor.x != workarea.globalMVPredictor.x ) || ( workarea.predictor.y != workarea.globalMVPredictor.y )))
-        //	{
-        saduv = (chroma) ? ScaleSadChroma(SADCHROMA(workarea.pSrc[1], nSrcPitch[1], GetRefBlockU(workarea, workarea.predictor.x, workarea.predictor.y), nRefPitch[1])
-            + SADCHROMA(workarea.pSrc[2], nSrcPitch[2], GetRefBlockV(workarea, workarea.predictor.x, workarea.predictor.y), nRefPitch[2]), effective_chromaSADscale) : 0;
-        sad = LumaSAD<pixel_t>(workarea, GetRefBlock(workarea, workarea.predictor.x, workarea.predictor.y));
-        sad += saduv;
-
-        cost = sad;
-        if (cost < workarea.nMinCost || tryMany)
-        {
-            workarea.bestMV.x = workarea.predictor.x;
-            workarea.bestMV.y = workarea.predictor.y;
-            workarea.bestMV.sad = sad;
-            workarea.nMinCost = cost;
-        }
-        
-    }
-    
-    // then, we refine, according to the search type
-    Refine<pixel_t>(workarea);
-
-    // we store the result
-    vectors[workarea.blkIdx].x = workarea.bestMV.x;
-    vectors[workarea.blkIdx].y = workarea.bestMV.y;
-    vectors[workarea.blkIdx].sad = workarea.bestMV.sad;
-
-    workarea.planeSAD += workarea.bestMV.sad; // for debug, plus fixme outer planeSAD is not used
-}
 
 template<typename pixel_t>
 void PlaneOfBlocks::DiamondSearch(WorkingArea &workarea, int length)
@@ -3150,13 +3006,6 @@ void	PlaneOfBlocks::search_mv_slice(Slicer::TaskData &td)
       workarea.nDxMin = -nPel * (workarea.x[0] - pSrcFrame->GetPlane(YPLANE)->GetHPadding() + nHPaddingScaled);
       workarea.nDyMin = -nPel * (workarea.y[0] - pSrcFrame->GetPlane(YPLANE)->GetVPadding() + nVPaddingScaled);
 
-      // try to early prefetch ?
-     /* const uint8_t* pucRef = GetRefBlock(workarea, zeroMVfieldShifted.x - 2, zeroMVfieldShifted.y - 2); // upper left corner
-      for (int row = 0; row < 9; row++)
-      {
-        _mm_prefetch(const_cast<const CHAR*>(reinterpret_cast<const CHAR*>(pucRef + nRefPitch[0] * row)), _MM_HINT_NTA); // prefetch next Ref rows
-      }*/
-
       /* search the mv */
       workarea.predictor = ClipMV(workarea, vectors[workarea.blkIdx]);
       if (temporal)
@@ -3168,14 +3017,7 @@ void	PlaneOfBlocks::search_mv_slice(Slicer::TaskData &td)
         workarea.predictors[4] = ClipMV(workarea, zeroMV);
       }
 
-      // Possible point of placement selection of 'predictors control'
-      if (_predictorType == 0)
-        PseudoEPZSearch<pixel_t>(workarea); // all predictors (original)
-      else if (_predictorType == 1) // DTL: partial predictors
-        PseudoEPZSearch_glob_med_pred<pixel_t>(workarea);
-      else // if (_predictorType == 2) // DTL: no predictiors
-        PseudoEPZSearch_no_pred<pixel_t>(workarea);
-
+      PseudoEPZSearch<pixel_t>(workarea);
       // workarea.bestMV = zeroMV; // debug
 
       if (outfilebuf != NULL) // write vector to outfile
@@ -3747,167 +3589,4 @@ PlaneOfBlocks::WorkingArea *PlaneOfBlocks::WorkingAreaFactory::do_create()
   ));
 }
 
-
-PlaneOfBlocks::ExhaustiveSearchFunction_t PlaneOfBlocks::get_ExhaustiveSearchFunction(int BlockX, int BlockY, int SearchParam, int _bits_per_pixel, arch_t arch)
-{
-
-  // BlkSizeX, BlkSizeY, bits_per_pixel, arch_t
-  std::map<std::tuple<int, int, int, int, arch_t>, ExhaustiveSearchFunction_t> func_fn;
-
-  //TODO: add nPel here too ? It need separate functions for nPel=1 and other nPel.
-
-  // SearchParam 1 or 2 or 4 is supported at the moment
-  func_fn[std::make_tuple(8, 8, 1, 8, USE_AVX2)] = &PlaneOfBlocks::ExhaustiveSearch8x8_uint8_np1_sp1_avx2;
-  func_fn[std::make_tuple(8, 8, 2, 8, USE_AVX2)] = &PlaneOfBlocks::ExhaustiveSearch8x8_uint8_np1_sp2_avx2;
-  func_fn[std::make_tuple(8, 8, 2, 8, NO_SIMD)] = &PlaneOfBlocks::ExhaustiveSearch8x8_uint8_sp2_c;
-  func_fn[std::make_tuple(8, 8, 4, 8, USE_AVX2)] = &PlaneOfBlocks::ExhaustiveSearch8x8_uint8_np1_sp4_avx2;
-  func_fn[std::make_tuple(8, 8, 4, 8, NO_SIMD)] = &PlaneOfBlocks::ExhaustiveSearch8x8_uint8_sp4_c;
-
-  ExhaustiveSearchFunction_t result = nullptr;
-  arch_t archlist[] = { USE_AVX2, USE_AVX, USE_SSE41, USE_SSE2, NO_SIMD };
-  int index = 0;
-  while (result == nullptr) {
-    arch_t current_arch_try = archlist[index++];
-    if (current_arch_try > arch) continue;
-    result = func_fn[std::make_tuple(BlockX, BlockY, SearchParam, _bits_per_pixel, current_arch_try)];
-
-    if (result == nullptr && current_arch_try == NO_SIMD) {
-      break;
-    }
-  }
-
-  return result;
-}
-
-
-
-
-void PlaneOfBlocks::ExhaustiveSearch8x8_uint8_sp4_c(WorkingArea& workarea, int mvx, int mvy) // 8x8 esa search radius 4
-{
-  // debug check !
-  // idea - may be not 4 checks are required - only upper left corner (starting addresses of buffer) and lower right (to not over-run atfer end of buffer - need check/test)
-  if (!workarea.IsVectorOK(mvx - 4, mvy - 4))
-  {
-    return;
-  }
-  if (!workarea.IsVectorOK(mvx + 3, mvy + 4))
-  {
-    return;
-  }
-  /*	if (!workarea.IsVectorOK(mvx - 4, mvy + 3))
-      {
-          return;
-      }
-      if (!workarea.IsVectorOK(mvx + 3, mvy - 4))
-      {
-          return;
-      }
-      */
-  unsigned short minsad = 65535;
-  int x_minsad = 0;
-  int y_minsad = 0;
-  for (int x = -4; x < 4; x++)
-  {
-    for (int y = -4; y < 5; y++)
-    {
-      int sad = SAD(workarea.pSrc[0], nSrcPitch[0], GetRefBlock(workarea, mvx + x, mvy + y), nRefPitch[0]);
-      if (sad < minsad)
-      {
-        minsad = sad;
-        x_minsad = x;
-        y_minsad = y;
-      }
-    }
-  }
-
-  sad_t cost = minsad + ((penaltyNew * minsad) >> 8);
-  if (cost >= workarea.nMinCost) return;
-
-  workarea.bestMV.x = mvx + x_minsad;
-  workarea.bestMV.y = mvy + y_minsad;
-  workarea.nMinCost = cost;
-  workarea.bestMV.sad = minsad;
-
-}
-
-// Dispatcher for DTL tests
-void PlaneOfBlocks::ExhaustiveSearch8x8_uint8_sp2_c(WorkingArea& workarea, int mvx, int mvy) // 8x8 esa search radius 2,  works for any nPel !.
-{
-  // debug check !
-  // idea - may be not 4 checks are required - only upper left corner (starting addresses of buffer) and lower right (to not over-run atfer end of buffer - need check/test)
-  if (!workarea.IsVectorOK(mvx - 2, mvy - 2))
-  {
-    return;
-  }
-  if (!workarea.IsVectorOK(mvx + 2, mvy + 2))
-  {
-    return;
-  }
-
-  unsigned short minsad = 65535;
-  int x_minsad = 0;
-  int y_minsad = 0;
-  for (int y = -2; y < 3; y++)
-  {
-    for (int x = -2; x < 3; x++)
-    {
-      int sad = SAD(workarea.pSrc[0], nSrcPitch[0], GetRefBlock(workarea, mvx + x, mvy + y), nRefPitch[0]);
-      if (sad < minsad)
-      {
-        minsad = sad;
-        x_minsad = x;
-        y_minsad = y;
-      }
-    }
-  }
-
-  sad_t cost = minsad + ((penaltyNew * minsad) >> 8);
-  if (cost >= workarea.nMinCost) return;
-
-  workarea.bestMV.x = mvx + x_minsad;
-  workarea.bestMV.y = mvy + y_minsad;
-  workarea.nMinCost = cost;
-  workarea.bestMV.sad = minsad;
-
-}
-
-void PlaneOfBlocks::ExhaustiveSearch8x8_uint8_sp1_c(WorkingArea& workarea, int mvx, int mvy) // 8x8 esa search radius 1, works for any nPel !
-{
-  // debug check !
-  // idea - may be not 4 checks are required - only upper left corner (starting addresses of buffer) and lower right (to not over-run atfer end of buffer - need check/test)
-  if (!workarea.IsVectorOK(mvx - 1, mvy - 1))
-  {
-    return;
-  }
-  if (!workarea.IsVectorOK(mvx + 1, mvy + 1))
-  {
-    return;
-  }
-
-  unsigned short minsad = 65535;
-  int x_minsad = 0;
-  int y_minsad = 0;
-  for (int y = -1; y < 2; y++)
-  {
-    for (int x = -1; x < 2; x++)
-    {
-      int sad = SAD(workarea.pSrc[0], nSrcPitch[0], GetRefBlock(workarea, mvx + x, mvy + y), nRefPitch[0]);
-      if (sad < minsad)
-      {
-        minsad = sad;
-        x_minsad = x;
-        y_minsad = y;
-      }
-    }
-  }
-
-  sad_t cost = minsad + ((penaltyNew * minsad) >> 8);
-  if (cost >= workarea.nMinCost) return;
-
-  workarea.bestMV.x = mvx + x_minsad;
-  workarea.bestMV.y = mvy + y_minsad;
-  workarea.nMinCost = cost;
-  workarea.bestMV.sad = minsad;
-
-}
 
