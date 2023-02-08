@@ -66,7 +66,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -101,14 +101,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithDebugInfo|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -143,20 +143,20 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithDebugInfo|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -378,6 +378,7 @@
       <ObjectFileName>$(IntDir)%(FileName).obj</ObjectFileName>
       <IncludePaths>.\asm;.\asm\include</IncludePaths>
       <PreprocessorDefinitions>PREFIX;ARCH_X86_64=0</PreprocessorDefinitions>
+      <AdditionalOptions>-w-macro-params-legacy %(AdditionalOptions)</AdditionalOptions>
     </NASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -429,6 +430,7 @@
       <ObjectFileName>$(IntDir)%(FileName).obj</ObjectFileName>
       <IncludePaths>.\asm;.\asm\include</IncludePaths>
       <PreprocessorDefinitions>PREFIX;ARCH_X86_64=1</PreprocessorDefinitions>
+      <AdditionalOptions>-w-macro-params-legacy %(AdditionalOptions)</AdditionalOptions>
     </NASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -492,6 +494,7 @@
       <ObjectFileName>$(IntDir)%(FileName).obj</ObjectFileName>
       <IncludePaths>.\asm;.\asm\include</IncludePaths>
       <PreprocessorDefinitions>PREFIX;ARCH_X86_64=0</PreprocessorDefinitions>
+      <AdditionalOptions>-w-macro-params-legacy %(AdditionalOptions)</AdditionalOptions>
     </NASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Clang|Win32'">
@@ -556,6 +559,7 @@
       <ObjectFileName>$(IntDir)%(FileName).obj</ObjectFileName>
       <IncludePaths>.\asm;.\asm\include</IncludePaths>
       <PreprocessorDefinitions>PREFIX;ARCH_X86_64=0</PreprocessorDefinitions>
+      <AdditionalOptions>-w-macro-params-legacy %(AdditionalOptions)</AdditionalOptions>
     </NASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ICL|Win32'">
@@ -621,6 +625,7 @@
       <ObjectFileName>$(IntDir)%(FileName).obj</ObjectFileName>
       <IncludePaths>.\asm;.\asm\include</IncludePaths>
       <PreprocessorDefinitions>PREFIX;ARCH_X86_64=0</PreprocessorDefinitions>
+      <AdditionalOptions>-w-macro-params-legacy %(AdditionalOptions)</AdditionalOptions>
     </NASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ICX|Win32'">
@@ -687,6 +692,7 @@
       <ObjectFileName>$(IntDir)%(FileName).obj</ObjectFileName>
       <IncludePaths>.\asm;.\asm\include</IncludePaths>
       <PreprocessorDefinitions>PREFIX;ARCH_X86_64=0</PreprocessorDefinitions>
+      <AdditionalOptions>-w-macro-params-legacy %(AdditionalOptions)</AdditionalOptions>
     </NASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_v141_xp|Win32'">
@@ -751,6 +757,7 @@
       <ObjectFileName>$(IntDir)%(FileName).obj</ObjectFileName>
       <IncludePaths>.\asm;.\asm\include</IncludePaths>
       <PreprocessorDefinitions>PREFIX;ARCH_X86_64=0</PreprocessorDefinitions>
+      <AdditionalOptions>-w-macro-params-legacy %(AdditionalOptions)</AdditionalOptions>
     </NASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithDebugInfo|Win32'">
@@ -818,6 +825,7 @@
       <ObjectFileName>$(IntDir)%(FileName).obj</ObjectFileName>
       <IncludePaths>.\asm;.\asm\include</IncludePaths>
       <PreprocessorDefinitions>PREFIX;ARCH_X86_64=0</PreprocessorDefinitions>
+      <AdditionalOptions>-w-macro-params-legacy %(AdditionalOptions)</AdditionalOptions>
     </NASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -881,6 +889,7 @@
       <ObjectFileName>$(IntDir)%(FileName).obj</ObjectFileName>
       <IncludePaths>.\asm;.\asm\include</IncludePaths>
       <PreprocessorDefinitions>PREFIX;ARCH_X86_64=1</PreprocessorDefinitions>
+      <AdditionalOptions>-w-macro-params-legacy %(AdditionalOptions)</AdditionalOptions>
     </NASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Clang|x64'">
@@ -909,7 +918,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\include\</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
       <AdditionalOptions>-mcx16 -msse4.1 -Wno-unused-lambda-capture -Wno-unused-variable</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <Parallelization>false</Parallelization>
@@ -918,7 +927,7 @@
       </FloatingPointModel>
       <Mtune>No</Mtune>
       <Cpp0xSupport>true</Cpp0xSupport>
-      <AssemblerOutput>AssemblyAndMachineCode</AssemblerOutput>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
       <ProgramDataBaseFileName>$(IntDir)\vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
@@ -943,6 +952,7 @@
       <ObjectFileName>$(IntDir)%(FileName).obj</ObjectFileName>
       <IncludePaths>.\asm;.\asm\include</IncludePaths>
       <PreprocessorDefinitions>PREFIX;ARCH_X86_64=1</PreprocessorDefinitions>
+      <AdditionalOptions>-w-macro-params-legacy %(AdditionalOptions)</AdditionalOptions>
     </NASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ICL|x64'">
@@ -1008,6 +1018,7 @@
       <ObjectFileName>$(IntDir)%(FileName).obj</ObjectFileName>
       <IncludePaths>.\asm;.\asm\include</IncludePaths>
       <PreprocessorDefinitions>PREFIX;ARCH_X86_64=1</PreprocessorDefinitions>
+      <AdditionalOptions>-w-macro-params-legacy %(AdditionalOptions)</AdditionalOptions>
     </NASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ICX|x64'">
@@ -1039,14 +1050,14 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <AdditionalOptions>
       </AdditionalOptions>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>MaxSpeedHighLevel</Optimization>
       <Parallelization>false</Parallelization>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FloatingPointModel>
       </FloatingPointModel>
       <Mtune>No</Mtune>
       <Cpp0xSupport>true</Cpp0xSupport>
-      <AssemblerOutput>AssemblyAndMachineCode</AssemblerOutput>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
       <ProgramDataBaseFileName>$(IntDir)\vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
@@ -1055,6 +1066,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ConformanceMode>true</ConformanceMode>
       <UseProcessorExtensions>SSE42</UseProcessorExtensions>
+      <InterproceduralOptimization>NoIPO</InterproceduralOptimization>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -1074,6 +1086,7 @@
       <ObjectFileName>$(IntDir)%(FileName).obj</ObjectFileName>
       <IncludePaths>.\asm;.\asm\include</IncludePaths>
       <PreprocessorDefinitions>PREFIX;ARCH_X86_64=1</PreprocessorDefinitions>
+      <AdditionalOptions>-w-macro-params-legacy %(AdditionalOptions)</AdditionalOptions>
     </NASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_v141_xp|x64'">
@@ -1137,6 +1150,7 @@
       <ObjectFileName>$(IntDir)%(FileName).obj</ObjectFileName>
       <IncludePaths>.\asm;.\asm\include</IncludePaths>
       <PreprocessorDefinitions>PREFIX;ARCH_X86_64=1</PreprocessorDefinitions>
+      <AdditionalOptions>-w-macro-params-legacy %(AdditionalOptions)</AdditionalOptions>
     </NASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithDebugInfo|x64'">
@@ -1201,6 +1215,7 @@
       <ObjectFileName>$(IntDir)%(FileName).obj</ObjectFileName>
       <IncludePaths>.\asm;.\asm\include</IncludePaths>
       <PreprocessorDefinitions>PREFIX;ARCH_X86_64=1</PreprocessorDefinitions>
+      <AdditionalOptions>-w-macro-params-legacy %(AdditionalOptions)</AdditionalOptions>
     </NASM>
   </ItemDefinitionGroup>
   <ItemGroup>
