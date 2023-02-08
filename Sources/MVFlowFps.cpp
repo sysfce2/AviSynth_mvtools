@@ -283,6 +283,34 @@ MVFlowFps::~MVFlowFps()
   if (needDistinctChroma)
     _aligned_free(MaskFullUVF);
 
+  _aligned_free(VXFullYB);
+  _aligned_free(VYFullYB);
+  if (needDistinctChroma) {
+    _aligned_free(VYFullUVB);
+    _aligned_free(VXFullUVB);
+  }
+
+  _aligned_free(VXFullYF);
+  _aligned_free(VYFullYF);
+  if (needDistinctChroma) {
+    _aligned_free(VXFullUVF);
+    _aligned_free(VYFullUVF);
+  }
+
+  _aligned_free(VXSmallYB);
+  _aligned_free(VYSmallYB);
+  if (needDistinctChroma) {
+    _aligned_free(VXSmallUVB);
+    _aligned_free(VYSmallUVB);
+  }
+
+  _aligned_free(VXSmallYF);
+  _aligned_free(VYSmallYF);
+  if (needDistinctChroma) {
+    _aligned_free(VXSmallUVF);
+    _aligned_free(VYSmallUVF);
+  }
+
   _aligned_free(VXFullYBB);
   _aligned_free(VYFullYBB);
   if (needDistinctChroma) {
