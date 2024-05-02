@@ -1316,22 +1316,22 @@ PVideoFrame __stdcall DePanStabilize::GetFrame(int ndest, IScriptEnvironment* en
 
 // ---------------------------------------------------------------------------
 //output motion to AviSynth (float) variables - added in v.1.8 as requested by AI
-  if (vdx != "")
+  if (*vdx)
   {
     vdx_val = dxdif; // store to static place
     env->SetVar(vdx, vdx_val); // by reference!
   }
-  if (vdy != "")
+  if (*vdy)
   {
     vdy_val = dydif;
     env->SetVar(vdy, vdy_val);
   }
-  if (vzoom != "")
+  if (*vzoom)
   {
     vzoom_val = zoomdif;
   }
   env->SetVar(vzoom, vzoom_val);
-  if (vrot != "")
+  if (*vrot)
   {
     vrot_val = rotdif;
     env->SetVar(vrot, vrot_val);
