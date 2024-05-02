@@ -1174,12 +1174,12 @@ PVideoFrame __stdcall DePanEstimate_fftw::GetFrame(int ndest, IScriptEnvironment
   // not write if show correlation surface
   if (show == 0) write_depan_data(dstp, nfirst, nlast, motionx, motiony, motionzoom);
 
-  if ((logfilename != "") && logfile != NULL) {  // write log file if name correct
+  if ((lstrlen(logfilename) > 0) && logfile != NULL) {  // write log file if name correct
     // write frame number, dx, dy, rotation and zoom in Deshaker log format
     write_deshakerlog(logfile, vi.IsFieldBased(), vi.IsTFF(), ndest, motionx, motiony, motionzoom);
 
   }
-  if ((extlogfilename != "") && extlogfile != NULL) {  // write log file if name correct
+  if ((lstrlen(extlogfilename) > 0) && extlogfile != NULL) {  // write log file if name correct
     // write frame number, dx, dy, rotation and zoom in Deshaker log format
     write_extlog(extlogfile, vi.IsFieldBased(), vi.IsTFF(), ndest, motionx, motiony, motionzoom, trust);
   }
