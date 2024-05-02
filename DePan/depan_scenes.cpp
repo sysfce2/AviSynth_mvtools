@@ -146,7 +146,7 @@ DePanScenes::DePanScenes(PClip _child, int _plane, const char * _inputlog, IScri
 
 //	child->SetCacheHints(CACHE_RANGE,0); - disabled in v.1.9
 
-	if (inputlog != "") { // motion data will be readed from deshaker.log file once at start
+	if (lstrlen(inputlog) > 0) { // motion data will be readed from deshaker.log file once at start
 		error = read_deshakerlog(inputlog,vi.num_frames,motionx,motiony,motionrot,motionzoom,&loginterlaced);
 		if (error==-1)	env->ThrowError("DePanScenes: Input log file not found!");
 		if (error==-2)	env->ThrowError("DePanScenes: Error input log file format!");
