@@ -1432,7 +1432,7 @@ void PlaneOfBlocks::CrossSearch(WorkingArea &workarea, int start, int x_max, int
   for (int j = start; j < y_max; j += 2)
   {
     CheckMV<pixel_t>(workarea, mvx, mvy + j);
-    CheckMV<pixel_t>(workarea, mvx, mvy + j);
+    CheckMV<pixel_t>(workarea, mvx, mvy - j);
   }
 }
 
