@@ -975,9 +975,9 @@ void Overlaps_float_new_sse2(uint16_t* pDst0, int nDstPitch, const unsigned char
 
 OverlapsFunction *get_overlaps_function(int BlockX, int BlockY, int pixelsize, bool out32_flag, arch_t arch)
 {
-  constexpr int OUT32_MARKER = 16;
-  if (out32_flag)
-    pixelsize += OUT32_MARKER;
+    constexpr int OUT32_MARKER = 16;
+    if (out32_flag)
+      pixelsize += OUT32_MARKER;
     //---------- OVERLAPS
     // BlkSizeX, BlkSizeY, pixelsize, arch_t
     std::map<std::tuple<int, int, int, arch_t>, OverlapsFunction*> func_overlaps;
