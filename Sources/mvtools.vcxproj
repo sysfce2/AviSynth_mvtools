@@ -663,7 +663,6 @@
       <Optimization>MaxSpeed</Optimization>
       <FloatingPointModel>
       </FloatingPointModel>
-      <Mtune>No</Mtune>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\include\</AdditionalIncludeDirectories>
       <Cpp0xSupport>true</Cpp0xSupport>
       <AssemblerOutput>NoListing</AssemblerOutput>
@@ -1055,7 +1054,6 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FloatingPointModel>
       </FloatingPointModel>
-      <Mtune>No</Mtune>
       <Cpp0xSupport>true</Cpp0xSupport>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
       <ProgramDataBaseFileName>$(IntDir)\vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
