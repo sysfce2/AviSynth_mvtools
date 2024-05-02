@@ -70,6 +70,7 @@
 #include "info.h"
 #include "estimate_fftw.h"
 #include <mutex>
+#include <algorithm>
 
 static std::mutex _fftw_mutex; // defined as static inside
 
