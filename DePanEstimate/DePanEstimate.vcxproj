@@ -203,10 +203,10 @@
     <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <ExecutablePath>$(VC_ExecutablePath_x86);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);</ExecutablePath>
-    <ExcludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(VC_ExecutablePath_x86);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(FxCopDir);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x86);$(SystemRoot)</ExcludePath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
+    <ExecutablePath>$(ICInstallDir)bin\Intel64;$(NativeExecutablePath)</ExecutablePath>
+    <ExcludePath>$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\$(IntelPlatform);$(ICInstallDir)compiler\lib\$(IntelPlatform)_win;$(ExcludePath)</ExcludePath>
+    <IncludePath>$(oneTBBProductDir)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ICLibDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ICX|Win32'">
     <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
