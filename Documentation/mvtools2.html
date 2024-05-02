@@ -2215,12 +2215,17 @@ Planar2Interleaved() # convert back to normal interleave YUY2
 
     <h2><a name="revisions"></a>VI) Revisions</h2>
 
-    <p>2.7.46 (20230208)</p>
+
+    <p>2.7.46 (20240502)</p>
     <ul>
+        <li>Fix (#56): bug in Cross search</li>
+        <li>(unreleased 2.7.46 (20230208) test build in https://github.com/pinterf/mvtools/issues/58)</li>
         <li>Fix (#58): MFlowFPS memory leak</li>
-        <li>Fix (#49): lsad 0 division-by-zero crash</li>
-        <li>Code change/speedup: MDegrainN 10-16 bits: SSE4.1 code path (was: C only)</li>
-        <li>fix: MRestoreVect was trying to create unaligned frame (crash)</li>
+        <li>Fix (#49): lsad 0 caused division-by-zero crash</li>
+        <li>Optimization: MDegrain1-6 8 bit: Add avx2 code path (already was in code but disabled, now go live)
+        <li>Optimization: MDegrainN 10-16 bits: SSE4.1 code path (was: C only)</li>
+        <li>VerticalBicubic interpolation SSE4.1 version besides SSE2</li>
+        <li>Fix: MRestoreVect was trying to create unaligned frame (crash)</li>
         <li>(#48) Project files/solution: Intel C++ Compiler 2021 (icx) and 19.2 (icl classic) support on Windows</li>
         <li>internals: MDegrain: horizontal 4 byte reads do not read 8 bytes (no problems though, just this is more correct code-wise)</li>
         <li>

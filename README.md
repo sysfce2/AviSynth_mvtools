@@ -12,13 +12,17 @@ File: mvtools2.dll
 - Manao, Fizick, Tsp, TSchniede, SEt, Vit, Firesledge, cretindesalpes 
 
 ## Links
-
-- http://avisynth.org.ru/mvtools/mvtools2.html
-- http://avisynth.nl/index.php/External_filters#64-bit_filters 
+- Doom9 forum: https://forum.doom9.org/showthread.php?t=173356
 - Avisynth wiki: http://avisynth.nl/index.php/MVTools
 - Project host: https://github.com/pinterf/mvtools under mvtools-pfmod branch
+- http://avisynth.nl/index.php/External_filters#64-bit_filters 
+- http://avisynth.org.ru/mvtools/mvtools2.html
 
 For more information see also documents folder.
+
+Note:
+For a more experimental feature set (new parameters, use hw devices for motion estimation, but Windows only)
+have a look at DTL's fork: https://github.com/DTL2020/mvtools
 
 ## External dependencies: 
 
@@ -47,7 +51,7 @@ Other builds are using internal SIMD code, governed by defines in def.h
 
 ### Windows MSVC
 
-- Prequisite: for asm compilation use nasm https://www.nasm.us/ 
+- Prerequisite: for asm compilation use nasm https://www.nasm.us/ 
   Visual Studio integration: https://github.com/ShiftMediaProject/VSNASM/releases
 
   Compiler nasm.exe can appear in c:\Program Files\Microsoft Visual Studio\2022\Community\VC\
