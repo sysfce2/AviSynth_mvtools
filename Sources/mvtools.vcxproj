@@ -1783,8 +1783,8 @@
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release_v141_xp|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='ReleaseWithDebugInfo|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <UseProcessorExtensions Condition="'$(Configuration)|$(Platform)'=='ICX|Win32'">COMMON512</UseProcessorExtensions>
-      <UseProcessorExtensions Condition="'$(Configuration)|$(Platform)'=='ICX|x64'">COMMON512</UseProcessorExtensions>
+      <UseProcessorExtensions Condition="'$(Configuration)|$(Platform)'=='ICX|Win32'">AVX2</UseProcessorExtensions>
+      <UseProcessorExtensions Condition="'$(Configuration)|$(Platform)'=='ICX|x64'">AVX2</UseProcessorExtensions>
     </ClCompile>
     <ClCompile Include="MVDepan.cpp" />
     <ClCompile Include="MVFilter.cpp" />
@@ -1819,8 +1819,8 @@
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release_v141_xp|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='ReleaseWithDebugInfo|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <UseProcessorExtensions Condition="'$(Configuration)|$(Platform)'=='ICX|Win32'">COMMON512</UseProcessorExtensions>
-      <UseProcessorExtensions Condition="'$(Configuration)|$(Platform)'=='ICX|x64'">COMMON512</UseProcessorExtensions>
+      <UseProcessorExtensions Condition="'$(Configuration)|$(Platform)'=='ICX|Win32'">AVX2</UseProcessorExtensions>
+      <UseProcessorExtensions Condition="'$(Configuration)|$(Platform)'=='ICX|x64'">AVX2</UseProcessorExtensions>
     </ClCompile>
     <ClCompile Include="SADFunctions.cpp" />
     <ClCompile Include="SADFunctions_avx2.cpp">
@@ -1840,8 +1840,8 @@
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='ReleaseWithDebugInfo|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Rel_Clang|Win32'">-mfma -mavx2 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Rel_Clang|x64'">-mfma -mavx2 %(AdditionalOptions)</AdditionalOptions>
-      <UseProcessorExtensions Condition="'$(Configuration)|$(Platform)'=='ICX|Win32'">COMMON512</UseProcessorExtensions>
-      <UseProcessorExtensions Condition="'$(Configuration)|$(Platform)'=='ICX|x64'">COMMON512</UseProcessorExtensions>
+      <UseProcessorExtensions Condition="'$(Configuration)|$(Platform)'=='ICX|Win32'">AVX2</UseProcessorExtensions>
+      <UseProcessorExtensions Condition="'$(Configuration)|$(Platform)'=='ICX|x64'">AVX2</UseProcessorExtensions>
     </ClCompile>
     <ClCompile Include="SimpleResize.cpp" />
     <ClCompile Include="Variance.cpp" />
