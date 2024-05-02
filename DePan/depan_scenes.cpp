@@ -296,7 +296,7 @@ PVideoFrame __stdcall DePanScenes::GetFrame(int ndest, IScriptEnvironment* env) 
           dstp[w + 3] = srcp[w + 3];
         }
       }
-      else if (plane = 2) // U
+      else if (plane == 2) // U
       { // copy
         for (w = 0; w < src_width; w += 4)
         {
@@ -306,7 +306,7 @@ PVideoFrame __stdcall DePanScenes::GetFrame(int ndest, IScriptEnvironment* env) 
           dstp[w + 3] = srcp[w + 3];
         }
       }
-      else if (plane = 3) // Y,U
+      else if (plane == 3) // Y,U
       { // copy
         for (w = 0; w < src_width; w += 4)
         {
@@ -316,7 +316,7 @@ PVideoFrame __stdcall DePanScenes::GetFrame(int ndest, IScriptEnvironment* env) 
           dstp[w + 3] = srcp[w + 3];
         }
       }
-      else if (plane = 4) // V
+      else if (plane == 4) // V
       { // copy
         for (w = 0; w < src_width; w += 4)
         {
@@ -326,7 +326,7 @@ PVideoFrame __stdcall DePanScenes::GetFrame(int ndest, IScriptEnvironment* env) 
           dstp[w + 3] = mark;
         }
       }
-      else if (plane = 5) // Y,V
+      else if (plane == 5) // Y,V
       { // copy
         for (w = 0; w < src_width; w += 4)
         {
@@ -336,7 +336,7 @@ PVideoFrame __stdcall DePanScenes::GetFrame(int ndest, IScriptEnvironment* env) 
           dstp[w + 3] = mark;
         }
       }
-      else if (plane = 6) // U,V
+      else if (plane == 6) // U,V
       { // copy
         for (w = 0; w < src_width; w += 4)
         {
@@ -346,7 +346,7 @@ PVideoFrame __stdcall DePanScenes::GetFrame(int ndest, IScriptEnvironment* env) 
           dstp[w + 3] = mark;
         }
       }
-      else if (plane = 7) // Y,U,V
+      else if (plane == 7) // Y,U,V
       { // copy
         for (w = 0; w < src_width; w += 4)
         {
