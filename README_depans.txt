@@ -18,6 +18,13 @@ Modification base:
 http://avisynth.org.ru/depan/depan.html
 
 Change log
+- (20240503)
+  - Moved to Visual Studio 2022, v141_xp and v143 toolset, Intel Compiler ICX 2024.1 and ICL build support
+  Depan 2.14
+    - Fix: "DepanScenes" plane parameter for YUY2 clips did not work
+  DepanEstimate 2.11
+    - Throw an error if memory allocation fails
+
 - (20200522)
   Depan 2.13.1.6 
   DepanEstimate 2.10.0.4
@@ -63,7 +70,7 @@ External dependencies for DepanEstimate:
 - libfftw3f-3.dll (or renamed to FFT3W.DLL)
 from http://www.fftw.org/ or look at ICL builds at http://forum.doom9.org/showthread.php?t=173229
   
-- Requires Microsoft Visual C++ Redistributable 2019, 2017 or 2015 Update 3
+- Requires Microsoft Visual C++ Redistributable 2022, 2019
   
 Source code:
 https://github.com/pinterf/mvtools

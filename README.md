@@ -41,7 +41,7 @@ http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins
 
 Source code:
 
-## Build Instructrions
+## Build Instructions
 
 Note:
 
@@ -61,6 +61,12 @@ Other builds are using internal SIMD code, governed by defines in def.h
   For XP compatible (v141_xp) build, copy them to c:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Microsoft\VC\v150\BuildCustomizations\ as well.
   
   Latest nasm (as of 2022.Dec.) will throw a lot of warnings on x265 assembler files. Temporarily they are silenced with -w-macro-params-legacy parameter.
+
+* build from IDE
+
+### Windows Visual Studio + Intel C++ Compiler ICX and ICL
+
+- Prerequisite: Intel C++ compilers + Visual Studio integration
 
 * build from IDE
 

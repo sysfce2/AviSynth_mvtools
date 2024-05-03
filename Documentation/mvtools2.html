@@ -2216,22 +2216,24 @@ Planar2Interleaved() # convert back to normal interleave YUY2
     <h2><a name="revisions"></a>VI) Revisions</h2>
 
 
-    <p>2.7.46 (20240502)</p>
+    <p>2.7.46 (20240503)</p>
     <ul>
+        <li>Recheck and fix build processes for various compilers<br />
+            (Visual Studio MSVC v143, v141_xp; Intel C++ Compiler 2024.1 ICX, 19.2 ICL; ClangCL; gcc mingw64)
+        </li>
         <li>Fix (#56): bug in Cross search</li>
         <li>(unreleased 2.7.46 (20230208) test build in https://github.com/pinterf/mvtools/issues/58)</li>
         <li>Fix (#58): MFlowFPS memory leak</li>
         <li>Fix (#49): lsad 0 caused division-by-zero crash</li>
         <li>Optimization: MDegrain1-6 8 bit: Add avx2 code path (already was in code but disabled, now go live)
         <li>Optimization: MDegrainN 10-16 bits: SSE4.1 code path (was: C only)</li>
-        <li>VerticalBicubic interpolation SSE4.1 version besides SSE2</li>
+        <li>Optimization: VerticalBicubic interpolation SSE4.1 version besides SSE2</li>
         <li>Fix: MRestoreVect was trying to create unaligned frame (crash)</li>
         <li>(#48) Project files/solution: Intel C++ Compiler 2021 (icx) and 19.2 (icl classic) support on Windows</li>
-        <li>internals: MDegrain: horizontal 4 byte reads do not read 8 bytes (no problems though, just this is more correct code-wise)</li>
-        <li>
-            Re-allow avx2 MDegrain1-6 8 bit:<br />
-            Possible LLVM-build speedup by not using _mm256_zeroupper in avx2,<br />
-            compilers do that automatically and this makes LLVM to unoptimizedly save and restore _all_ ymm registers (slow!)
+        <li>Source internals: MDegrain: for block size of 4, read exactly 4 bytes instead of 8. (in extreme cases it would read past a valid memory area)</li>
+        <li>MDegrain1-6 8 bit: Add avx2 code path (already was in code but disabled, now go live)</li>
+        <li>Possible LLVM-build speedup by not using _mm256_zeroupper in avx2,<br />
+            compilers do that automatically. LLVM builds, because it unoptimizedly saved and restored _all_ ymm registers (slow!)
         </li>
     </ul>
 
