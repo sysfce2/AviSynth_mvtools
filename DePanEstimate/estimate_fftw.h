@@ -62,6 +62,8 @@ class DePanEstimate_fftw : public GenericVideoFilter {
   // This filter extends GenericVideoFilter, which incorporates basic functionality.
   // All functions present in the filter must also be present here.
   bool has_at_least_v8;
+  bool has_at_least_v12;
+  IScriptEnvironment* env_saved;
 // filter parameters
   int range;  // radius of frame series for motion calculation
   float trust_limit;  // scene change threshold, percent of correlation variation
