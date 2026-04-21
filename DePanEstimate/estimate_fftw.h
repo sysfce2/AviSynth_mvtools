@@ -191,6 +191,8 @@ public:
   PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment* env);
   // This is the function that AviSynth calls to get a given frame.
   // So when this functions gets called, the filter is supposed to return frame n.
+
+  int __stdcall SetCacheHints(int cachehints, int frame_range);
 };
 
 #endif

@@ -827,6 +827,22 @@ void  DePanEstimate_fftw::showcorrelation(float *correl, int winx, int winy, BYT
 //
 // ****************************************************************************
 //
+int __stdcall DePanEstimate_fftw::SetCacheHints(int cachehints, int frame_range) {
+  (void)frame_range;
+  if (cachehints == CACHE_GET_MTMODE) {
+    // File logging requires serialization: with MT_MULTI_INSTANCE each clone would
+    // open and write to the same path concurrently, corrupting the output.
+    // Without file output, per-instance state (fftcache, correl, motionx, etc.)
+    // is fully independent, so MT_MULTI_INSTANCE is safe.
+    // Trade-off: MT_MULTI_INSTANCE means each clone maintains its own FFT cache,
+    // so cached results are not shared across threads (sub-optimal but correct).
+    bool has_file_output = (lstrlen(logfilename) > 0) || (lstrlen(extlogfilename) > 0);
+    return has_file_output ? MT_SERIALIZED : MT_MULTI_INSTANCE;
+  }
+  return 0;
+}
+
+//
 PVideoFrame __stdcall DePanEstimate_fftw::GetFrame(int ndest, IScriptEnvironment* env) {
   fftwf_complex *fftcur, *fftprev; // chanded in v.1.0
   fftwf_complex *fftcur2, *fftprev2; // right for zoom
