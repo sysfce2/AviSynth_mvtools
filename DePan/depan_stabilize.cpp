@@ -205,8 +205,7 @@ public:
 
 
   PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment* env);
-  // This is the function that AviSynth calls to get a given frame.
-  // So when this functions gets called, the filter is supposed to return frame n.
+  int __stdcall SetCacheHints(int cachehints, int frame_range);
 
 };
 
@@ -990,6 +989,20 @@ float DePanStabilize::Averagefraction(float dxdif, float dydif, float zoomdif, f
 }
 
 // ****************************************************************************
+//
+int __stdcall DePanStabilize::SetCacheHints(int cachehints, int frame_range) {
+  (void)frame_range;
+  if (cachehints == CACHE_GET_MTMODE) {
+    // debuglogfile: file writes happen in GetFrame, concurrent clones would corrupt output.
+    // vdx/vdy/vzoom/vrot: uses env->SetVar() to write named global script variables — shared
+    //   state across threads even with separate instances.
+    bool has_global_side_effects = (lstrlen(debuglog) > 0)
+      || (*vdx) || (*vdy) || (*vzoom) || (*vrot);
+    return has_global_side_effects ? MT_SERIALIZED : MT_MULTI_INSTANCE;
+  }
+  return 0;
+}
+
 //
 PVideoFrame __stdcall DePanStabilize::GetFrame(int ndest, IScriptEnvironment* env) {
   // This is the implementation of the GetFrame function.

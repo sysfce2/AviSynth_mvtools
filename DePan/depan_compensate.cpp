@@ -196,13 +196,12 @@ public:
 
 
   PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment* env);
-  // This is the function that AviSynth calls to get a given frame.
-  // So when this functions gets called, the filter is supposed to return frame n.
+  int __stdcall SetCacheHints(int cachehints, int frame_range);
 };
 
 
 //***************************
-//  The following is the implementation 
+//  The following is the implementation
 //  of the defined functions.
 // ***************************
 //****************************************************************************
@@ -321,6 +320,14 @@ DePan::~DePan() {
 
 //
 // ****************************************************************************
+//
+int __stdcall DePan::SetCacheHints(int cachehints, int frame_range) {
+  (void)frame_range;
+  if (cachehints == CACHE_GET_MTMODE)
+    return MT_MULTI_INSTANCE;
+  return 0;
+}
+
 //
 PVideoFrame __stdcall DePan::GetFrame(int ndest, IScriptEnvironment* env) {
   // This is the implementation of the GetFrame function.
@@ -981,12 +988,11 @@ public:
 
 
   PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment* env);
-  // This is the function that AviSynth calls to get a given frame.
-  // So when this functions gets called, the filter is supposed to return frame n.
+  int __stdcall SetCacheHints(int cachehints, int frame_range);
 };
 
 //***************************
-//  The following is the implementation 
+//  The following is the implementation
 //  of the defined functions.
 // ***************************
 //****************************************************************************
@@ -1069,6 +1075,14 @@ DePanInterleave::~DePanInterleave() {
 
 //
 // ****************************************************************************
+//
+int __stdcall DePanInterleave::SetCacheHints(int cachehints, int frame_range) {
+  (void)frame_range;
+  if (cachehints == CACHE_GET_MTMODE)
+    return MT_MULTI_INSTANCE;
+  return 0;
+}
+
 //
 PVideoFrame __stdcall DePanInterleave::GetFrame(int ndest, IScriptEnvironment* env) {
   // This is the implementation of the GetFrame function.
