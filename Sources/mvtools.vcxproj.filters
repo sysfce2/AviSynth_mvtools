@@ -461,5 +461,8 @@
     <NASM Include="asm\const16-a.asm">
       <Filter>Assembler</Filter>
     </NASM>
+    <NASM Include="asm\Overlap-a.asm">
+      <Filter>Assembler</Filter>
+    </NASM>
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 <Solution>
   <Configurations>
     <BuildType Name="Debug" />
+    <BuildType Name="IntelCpp" />
     <BuildType Name="Release" />
     <BuildType Name="ReleaseWithDebugInfo" />
     <BuildType Name="Release_v141_xp" />
