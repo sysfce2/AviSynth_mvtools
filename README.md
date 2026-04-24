@@ -54,13 +54,24 @@ Other builds are using internal SIMD code, governed by defines in def.h
 - Prerequisite: for asm compilation use nasm https://www.nasm.us/ 
   Visual Studio integration: https://github.com/ShiftMediaProject/VSNASM/releases
 
-  Compiler nasm.exe can appear in c:\Program Files\Microsoft Visual Studio\2022\Community\VC\
+  Compiler nasm.exe can appear in e.g. `C:\Program Files\Microsoft Visual Studio\18\Community\VC\`
 
-  You can check the files nasm.targets, nasm.props and nasm.xml in e.g. c:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Microsoft\VC\v170\BuildCustomizations\
+  You can check the files nasm.targets, nasm.props and nasm.xml in e.g. `C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Microsoft\VC\v170\BuildCustomizations\`
 
-  For XP compatible (v141_xp) build, copy them to c:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Microsoft\VC\v150\BuildCustomizations\ as well.
-  
-  Latest nasm (as of 2022.Dec.) will throw a lot of warnings on x265 assembler files. Temporarily they are silenced with -w-macro-params-legacy parameter.
+  For XP compatible (v141_xp) build, copy them to the v150 BuildCustomizations folder as well:
+  `C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Microsoft\VC\v150\BuildCustomizations\`
+
+  **Important for VS2026 + v141_xp:** The VSNASM files released for VS2026 use task parameters
+  (`TrackFileAccess` on `GetOutOfDateItems`, and `AcceptableNonZeroExitCodes`, `StdOutEncoding`,
+  `StdErrEncoding`, `UseMsbuildResourceManager` on `ParallelCustomBuild`/`CustomBuild`) that are
+  not supported by the older `Microsoft.Build.CppTasks.Common.dll` (v15.0) shipped with the v150
+  toolset folder. The v170 copy is fine as-is. In the **v150 copy only**, remove those attributes
+  from `nasm.targets`:
+  - In both `<GetOutOfDateItems>` calls: remove `TrackFileAccess="$(TrackFileAccess)"`
+  - In `<ParallelCustomBuild>`: remove `AcceptableNonZeroExitCodes`, `StdOutEncoding`, `StdErrEncoding`, `UseMsbuildResourceManager`
+  - In `<CustomBuild>`: remove `AcceptableNonZeroExitCodes`, `StdOutEncoding`, `StdErrEncoding`
+
+  Some nasm versions (e.g. the one valid around 2022.Dec.) will throw a lot of warnings on x265 assembler files. Temporarily they are silenced with -w-macro-params-legacy parameter.
 
 * build from IDE
 
