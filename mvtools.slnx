@@ -1,0 +1,18 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <BuildType Name="ReleaseWithDebugInfo" />
+    <BuildType Name="Release_v141_xp" />
+    <BuildType Name="Rel_Clang" />
+    <Platform Name="Win32" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="DePan/DePan.vcxproj" Id="342e3d8b-846c-4950-8b58-20f28b66c78a">
+    <BuildType Solution="ReleaseWithDebugInfo|*" Project="Release" />
+  </Project>
+  <Project Path="DePanEstimate/DePanEstimate.vcxproj" Id="26b3e578-55e5-4af9-80d7-ec1f1c4375dc">
+    <BuildType Solution="ReleaseWithDebugInfo|*" Project="Release" />
+  </Project>
+  <Project Path="Sources/mvtools.vcxproj" Id="e9befd98-715b-40c8-a1f1-1f302df0b32b" />
+</Solution>
