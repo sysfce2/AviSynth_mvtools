@@ -72,6 +72,8 @@ private:
   const bool _fftw_flag;
   const int _pixelsize; // PF
   const int _bits_per_pixel;
+  ::IScriptEnvironment* _env_ptr;
+  bool _has_at_least_v12;
 
 
 

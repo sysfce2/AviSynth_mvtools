@@ -20,11 +20,12 @@
 #ifndef __MV_DCTFFTW__
 #define __MV_DCTFFTW__
 
-#include <mutex>
 #include "DCTClass.h"
 #include "fftwlite.h"
 #include "types.h"
 #include "def.h"
+
+class IScriptEnvironment;
 
 class DCTFFTW
   : public DCTClass
@@ -72,10 +73,11 @@ class DCTFFTW
 
   DCTFFTW::Bytes2FloatFunction get_bytesToFloatPROC_function(int BlockX, int BlockY, int pixelsize, arch_t arch);
   DCTFFTW::Bytes2FloatFunction bytesToFloatPROC;
-  static std::mutex _fftw_mutex;
+  IScriptEnvironment* _env_ptr;
+  bool _has_at_least_v12;
 
 public:
-  DCTFFTW(int _sizex, int _sizey, FFTFunctionPointers &fftfp_preloaded, int _dctmode, int _pixelsize, int _bits_per_pixel, int cpu);
+  DCTFFTW(int _sizex, int _sizey, FFTFunctionPointers &fftfp_preloaded, int _dctmode, int _pixelsize, int _bits_per_pixel, int cpu, IScriptEnvironment* env, bool has_at_least_v12);
   ~DCTFFTW();
   // works internally by pixelsize:
   void DCTBytes2D(const unsigned char *srcp0, int _src_pitch, unsigned char *dctp, int _dct_pitch);

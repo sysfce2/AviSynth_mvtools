@@ -38,10 +38,66 @@
 #include <mutex>
 #include <cassert>
 
-std::mutex DCTFFTW::_fftw_mutex; // defined as static inside
+// FFTW is not thread-safe for plan creation/destruction.
+// http://www.fftw.org/fftw3_doc/Thread-safety.html#Thread-safety
+// Pre V12: does not guard locks from multiple plugins using FFTW at the same time.
+static std::mutex fftw_legacy_mutex;
 
-DCTFFTW::DCTFFTW(int _sizex, int _sizey, FFTFunctionPointers &fftfp_preloaded, int _dctmode, int _pixelsize, int _bits_per_pixel, int cpu)
+// Since Avisynth IF v12 use global lock which handles fftw locks for different plugins which use the same FFTW library.
+class GlobalLockGuard
 {
+public:
+  GlobalLockGuard(IScriptEnvironment* env_ptr, const char* lock_name, bool use_v12_global_lock)
+    : m_env_ptr(env_ptr), m_lockName(lock_name), m_acquired(false), m_is_legacy_lock(false)
+  {
+    if (!m_env_ptr || !m_lockName)
+      return;
+
+    if (use_v12_global_lock)
+    {
+      m_acquired = m_env_ptr->AcquireGlobalLock(m_lockName);
+      if (m_acquired) {
+        m_is_legacy_lock = false;
+        return;
+      }
+    }
+
+    if (strcmp(m_lockName, "fftw") == 0) {
+      fftw_legacy_mutex.lock();
+      m_acquired = true;
+      m_is_legacy_lock = true;
+    }
+  }
+
+  ~GlobalLockGuard()
+  {
+    if (m_acquired)
+    {
+      if (m_is_legacy_lock) {
+        fftw_legacy_mutex.unlock();
+      }
+      else {
+        if (m_env_ptr)
+          m_env_ptr->ReleaseGlobalLock(m_lockName);
+      }
+    }
+  }
+
+  GlobalLockGuard(const GlobalLockGuard&) = delete;
+  GlobalLockGuard& operator=(const GlobalLockGuard&) = delete;
+
+private:
+  IScriptEnvironment* m_env_ptr;
+  const char* m_lockName;
+  bool m_acquired;
+  bool m_is_legacy_lock;
+};
+
+DCTFFTW::DCTFFTW(int _sizex, int _sizey, FFTFunctionPointers &fftfp_preloaded, int _dctmode, int _pixelsize, int _bits_per_pixel, int cpu, IScriptEnvironment* env, bool has_at_least_v12)
+{
+  _env_ptr = env;
+  _has_at_least_v12 = has_at_least_v12;
+
   if (fft_threads < 1) // fixme: from parameter
     fft_threads = 1;
 
@@ -52,9 +108,8 @@ DCTFFTW::DCTFFTW(int _sizex, int _sizey, FFTFunctionPointers &fftfp_preloaded, i
   {
     throw AvisynthError(e.what());
   }
-  // from neo_fft3dfilter. Only for refere
   if (fft_threads > 1 && fftfp.has_threading()) {
-    std::lock_guard<std::mutex> lock(_fftw_mutex); // mutex!
+    GlobalLockGuard fftw_lock(_env_ptr, "fftw", _has_at_least_v12);
     fftfp.fftwf_init_threads();
     fftfp.fftwf_plan_with_nthreads(fft_threads);
   }
@@ -104,7 +159,7 @@ DCTFFTW::DCTFFTW(int _sizex, int _sizey, FFTFunctionPointers &fftfp_preloaded, i
 
   // FFTW plan construction and destruction are not thread-safe.
   // http://www.fftw.org/fftw3_doc/Thread-safety.html#Thread-safety
-  std::lock_guard<std::mutex> lock(_fftw_mutex);
+  GlobalLockGuard fftw_lock(_env_ptr, "fftw", _has_at_least_v12);
 
   fSrc = (float *)fftfp.fftwf_malloc(sizeof(float) * size2d);
   fSrcDCT = (float *)fftfp.fftwf_malloc(sizeof(float) * size2d);
@@ -123,7 +178,7 @@ DCTFFTW::DCTFFTW(int _sizex, int _sizey, FFTFunctionPointers &fftfp_preloaded, i
 
 DCTFFTW::~DCTFFTW()
 {
-  std::lock_guard lock(_fftw_mutex);
+  GlobalLockGuard fftw_lock(_env_ptr, "fftw", _has_at_least_v12);
 
   fftfp.fftwf_destroy_plan(dctplan);
   fftfp.fftwf_free(fSrc);

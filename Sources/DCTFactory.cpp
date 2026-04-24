@@ -48,10 +48,12 @@ DCTFactory::DCTFactory(int dctmode, bool isse, int blksizex, int blksizey, int p
 #endif
   , _pixelsize(pixelsize)
   , _bits_per_pixel(bits_per_pixel)
+  , _env_ptr(&env)
+  , _has_at_least_v12(false)
 
 {
   assert(dctmode != 0);
-  
+
   try {
     fftfp.load(0); // no existing, load library
   }
@@ -61,6 +63,17 @@ DCTFactory::DCTFactory(int dctmode, bool isse, int blksizex, int blksizey, int p
   }
 
   cpuflags = env.GetCPUFlags();
+
+  int avisynth_if_ver = 6;
+  try {
+    env.CheckVersion(9); // GetEnvProperty with AEP_INTERFACE_VERSION is only safe since V9
+    avisynth_if_ver = env.GetEnvProperty(AEP_INTERFACE_VERSION);
+  }
+  catch (const AvisynthError&) {
+    try { env.CheckVersion(8); avisynth_if_ver = 8; }
+    catch (const AvisynthError&) { avisynth_if_ver = 6; }
+  }
+  _has_at_least_v12 = (avisynth_if_ver >= 12);
 }
 
 
@@ -101,12 +114,12 @@ DCTClass *	DCTFactory::do_create()
 #ifdef USE_FDCT88INT_ASM
   if (_fftw_flag)
   {
-    return (new DCTFFTW(_blksizex, _blksizey, fftfp,  _dctmode, _pixelsize, _bits_per_pixel, cpuflags));
+    return (new DCTFFTW(_blksizex, _blksizey, fftfp, _dctmode, _pixelsize, _bits_per_pixel, cpuflags, _env_ptr, _has_at_least_v12));
   }
   return (new DCTINT(_blksizex, _blksizey, _dctmode));
 #else
   // no integer asm 8x8 DCT
-  return (new DCTFFTW(_blksizex, _blksizey, fftfp, _dctmode, _pixelsize, _bits_per_pixel, cpuflags));
+  return (new DCTFFTW(_blksizex, _blksizey, fftfp, _dctmode, _pixelsize, _bits_per_pixel, cpuflags, _env_ptr, _has_at_least_v12));
 #endif
 }
 
