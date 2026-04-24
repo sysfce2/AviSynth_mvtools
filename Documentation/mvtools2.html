@@ -12,7 +12,7 @@
     <h2>Abstract</h2>
     <table class="n">
         <tr><td class="n"><b>Authors:      </b></td><td class="n">&nbsp;</td><td class="n">Manao, Tsp, TSchniede, SEt, Fizick (Alexander Balakhnin), Vit, Firesledge, pinterf</td></tr>
-        <tr><td class="n"><b>Version:      </b></td><td class="n">&nbsp;</td><td class="n">2.7.46</td></tr>
+        <tr><td class="n"><b>Version:      </b></td><td class="n">&nbsp;</td><td class="n">2.7.47</td></tr>
         <tr><td class="n"><b>git:          </b></td><td class="n">&nbsp;</td><td class="n"><a href="https://github.com/pinterf/mvtools/tree/mvtools-pfmod">https://github.com/pinterf/mvtools/tree/mvtools-pfmod</a></td></tr>
         <tr><td class="n"><b>Forum:        </b></td><td class="n">&nbsp;</td><td class="n"><a href="https://forum.doom9.org/showthread.php?t=173356">https://forum.doom9.org/showthread.php?t=173356</a></td></tr>
         <tr><td class="n"><b>Base versions:</b></td><td class="n">&nbsp;</td><td class="n">2.6.0.5 + 2.5.11.22</td></tr>
@@ -2215,6 +2215,16 @@ Planar2Interleaved() # convert back to normal interleave YUY2
 
     <h2><a name="revisions"></a>VI) Revisions</h2>
 
+    <p>2.7.47 (20260424)</p>
+    <ul>
+        <li>Update Avisynth headers to V12 interface (AcquireGlobalLock/ReleaseGlobalLock support)</li>
+        <li>Thread-safe FFTW plan creation/destruction in DCTFFTW using GlobalLockGuard:<br />
+            On Avisynth+ V12+ uses the shared global named lock &quot;fftw&quot;, coordinating with
+            other plugins (e.g. dfttest, depanestimate) that use the same FFTW DLL.<br />
+            Falls back to a local static mutex on older Avisynth versions.
+        </li>
+        <li>Project solution: moved to VS2026 solution format (.slnx)</li>
+    </ul>
 
     <p>2.7.46 (20240503)</p>
     <ul>

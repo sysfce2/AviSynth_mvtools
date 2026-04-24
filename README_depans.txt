@@ -17,7 +17,27 @@ Modification base:
 - DepanEstimate 1.10 by Fizick
 http://avisynth.org.ru/depan/depan.html
 
-Change log
+Change log (modifications by pinterf: https://github.com/pinterf/):
+
+- (20260421)
+  Depan 2.15
+  - Update Avisynth headers to V12 interface
+  - Declare MT mode via SetCacheHints(CACHE_GET_MTMODE) for all four filters:
+    DePan, DePanInterleave, DePanScenes: MT_MULTI_INSTANCE (all per-instance state is independent).
+    DePanStabilize: MT_SERIALIZED when debuglog= is active (file writes in GetFrame) or when
+      any of vdx=/vdy=/vzoom=/vrot= are set (uses env->SetVar(), writing shared global script
+      variables); MT_MULTI_INSTANCE otherwise.
+  DepanEstimate 2.12
+  - Update Avisynth headers to V12 interface (AcquireGlobalLock/ReleaseGlobalLock support)
+  - Thread-safe FFTW plan creation/destruction using GlobalLockGuard:
+    On Avisynth+ V12+ uses the shared global named lock "fftw", coordinating with
+    other plugins (e.g. dfttest) that use the same FFTW DLL.
+    Falls back to a local static mutex on older Avisynth versions.
+  - Declare MT mode via SetCacheHints(CACHE_GET_MTMODE):
+    MT_SERIALIZED when file logging (log=/extlog=) is active (concurrent clones
+    would open and write the same file path, corrupting output).
+    MT_MULTI_INSTANCE otherwise (all per-instance state is independent).
+
 - (20240503)
   - Moved to Visual Studio 2022, v141_xp and v143 toolset, Intel Compiler ICX 2024.1 and ICL build support
   Depan 2.14
@@ -61,16 +81,13 @@ Change log
   - First digit of version number became 2 (Fizick's 1.x.x), others left untouched, (sync'd with Fizick's version number)
   - Built with Visual Studio 2015 Community Edition, v140-xp toolset
 
-Links
-  http://avisynth.org.ru/depan/depan.html
-
 For more information see also documents folder.
 
 External dependencies for DepanEstimate: 
 - libfftw3f-3.dll (or renamed to FFT3W.DLL)
 from http://www.fftw.org/ or look at ICL builds at http://forum.doom9.org/showthread.php?t=173229
   
-- Requires Microsoft Visual C++ Redistributable 2022, 2019
+- Requires Microsoft Visual C++ Redistributable
   
 Source code:
 https://github.com/pinterf/mvtools

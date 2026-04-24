@@ -1,4 +1,12 @@
 Change log
+- 2.7.47 (20260424)
+  - Update Avisynth headers to V12 interface (AcquireGlobalLock/ReleaseGlobalLock support)
+  - Thread-safe FFTW plan creation/destruction in DCTFFTW using GlobalLockGuard:
+    On Avisynth+ V12+ uses the shared global named lock "fftw", coordinating with
+    other plugins (e.g. dfttest, depanestimate) that use the same FFTW DLL.
+    Falls back to a local static mutex on older Avisynth versions.
+  - Project solution: moved to VS2026 solution format (.slnx)
+
 - 2.7.46 (20240503)
   - Recheck and fix build processes for various compilers 
     (Visual Studio MSVC v143, v141_xp; Intel C++ Compiler 2024.1 ICX, 19.2 ICL; ClangCL; gcc mingw64)
